@@ -20,14 +20,19 @@ export default function CreateUser() {
     };
 
     const handleOnSubmitClick = () => {
-        console.log("Submit clicked");
-        fetch("/api/user/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        });
+        try {
+            console.log("Submit clicked");
+            fetch("/api/user/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+            console.log("Submit clicked");
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
