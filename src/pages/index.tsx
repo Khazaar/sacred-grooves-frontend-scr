@@ -2,6 +2,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { Box, Button, Card } from "@mui/material";
 import { Inter } from "next/font/google";
 import Home from "./home";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,11 +31,11 @@ export default function Index() {
             {user && <Home></Home>}
             <Card sx={{}}>
                 <Box></Box>
-                <a href="/api/auth/login">Login</a>
-                <a href="/api/auth/logout">Logout</a>
-                <a href="/profile">Profile</a>
-                <a href="/api/users/">Get me</a>
-                <a href="/createUser">Create user</a>
+                <Link href="/api/auth/login">Login</Link>
+                <Link href="/api/auth/logout">Logout</Link>
+                <Link href="/profile">Profile</Link>
+                <Link href="/api/users/">Get me</Link>
+                <Link href="/createUser">Create user</Link>
                 <Button onClick={handleOnSubmitClick}>Create User</Button>
             </Card>
         </>

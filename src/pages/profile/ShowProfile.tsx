@@ -1,3 +1,4 @@
+import { getMe } from "@/servise/user.service";
 import {
     TableContainer,
     Paper,
@@ -7,72 +8,70 @@ import {
     TableRow,
     Button,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 //process.env.LOCALHOST_URL +
 
-async function getMe() {
-    try {
-        const res = await fetch("/api/user/me", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const user: IUserDto = {
-            nickName: "test",
-            firstName: "test",
-            lastName: "test",
-            email: "dd@rddr.rdddd",
-        };
-
-        // fetch("/api/user/create/", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(user),
-        // });
-
-        //const data = res.json();
-        console.log("res");
-        console.log(await res.json());
-        //return data as IUserDto;
-    } catch (error) {
-        console.log(error);
-    }
-}
 export default function ShowProfile() {
+    const [userMe, setUserMe] = useState<IUserDto>();
+
+    useEffect(() => {
+        getMe().then((data) => {
+            setUserMe(data);
+        });
+    }, []);
+
     return (
         <>
-            <Button
-                onClick={() => {
-                    getMe();
-                }}
-            >
-                getMe
-            </Button>
+            {userMe && (
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableBody>
+                            <TableRow key="Nick Name">
+                                <TableCell component="th" scope="row">
+                                    Nick Name
+                                </TableCell>
+
+                                <TableCell component="th" scope="row">
+                                    {userMe.nickName}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow key="First Name">
+                                <TableCell component="th" scope="row">
+                                    First Name
+                                </TableCell>
+
+                                <TableCell component="th" scope="row">
+                                    {userMe.firstName}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow key="Last Name">
+                                <TableCell component="th" scope="row">
+                                    Last Name
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                    {userMe.lastName}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow key="E-mail">
+                                <TableCell component="th" scope="row">
+                                    E-mail
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                    {userMe.email}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow key="Telegram">
+                                <TableCell component="th" scope="row">
+                                    Telegram
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                    {userMe.telegramName}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </>
-        // { userData } && (
-        //     <TableContainer component={Paper}>
-        //         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        //             <TableBody>
-        //                 <TableRow
-        //                     key="Nick Name"
-        //                     sx={{
-        //                         "&:last-child td, &:last-child th": {
-        //                             border: 0,
-        //                         },
-        //                     }}
-        //                 >
-        //                     <TableCell component="th" scope="row">
-        //                         Nick Name
-        //                     </TableCell>
-        //                     <TableCell component="th" scope="row">
-        //                         {/* {userData && userData.nickName} */}
-        //                     </TableCell>
-        //                 </TableRow>
-        //             </TableBody>
-        //         </Table>
-        //     </TableContainer>
-        // )
     );
 }

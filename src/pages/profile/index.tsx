@@ -1,7 +1,7 @@
 import React from "react";
 import AppMenu from "@/components/AppMenu";
 import { Button } from "@mui/material";
-import ShowProfile from "./ShowProfile";
+import ShowProfile from "./showProfile";
 
 export default function Profile() {
     //const accessToken = getAccessToken(req, res);
@@ -10,9 +10,8 @@ export default function Profile() {
     return (
         <>
             <AppMenu></AppMenu>
-            {/* @ts-expect-error Async Server Component */}
             <ShowProfile></ShowProfile>
-            <Button>Edit Profile</Button>
+            <Button href="/profile/editProfile">Edit Profile</Button>
         </>
     );
 }
