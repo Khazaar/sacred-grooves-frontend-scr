@@ -33,11 +33,22 @@ export async function getAllArtistTypes() {
                 "Content-Type": "application/json",
             },
         });
-
         return await res.json();
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getMusicSlyles() {}
+export async function getAllMusicSlyles() {
+    try {
+        const res = await fetch("/api/artists/music-styles", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+    }
+}

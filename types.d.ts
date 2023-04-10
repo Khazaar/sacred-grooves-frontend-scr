@@ -18,6 +18,6 @@ interface MapLocation {
 }
 
 interface IArtistDto {
-    artistTypes: string;
-    musicStyles: string;
+    artistTypes: string[];
+    musicStyles: string[];
 }
