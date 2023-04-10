@@ -16,3 +16,8 @@ interface MapLocation {
     city?: string;
     country?: string;
 }
+
+interface IArtistDto {
+    artistTypes: string;
+    musicStyles: string;
+}

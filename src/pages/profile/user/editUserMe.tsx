@@ -9,10 +9,12 @@ import {
     TextField,
     Button,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
-export default function EditProfile() {
+export default function EditUserMe() {
     const [userMe, setUserMe] = useState<IUserDto>();
+    const router = useRouter();
     useEffect(() => {
         getMe().then((data) => {
             setUserMe(data);
@@ -30,6 +32,7 @@ export default function EditProfile() {
 
     const handleSave = async () => {
         userMe && (await updateMe(userMe));
+        router.push("/profile");
     };
     return (
         <>

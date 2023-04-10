@@ -11,15 +11,7 @@ import {
 import { useEffect, useState } from "react";
 //process.env.LOCALHOST_URL +
 
-export default function ShowProfile() {
-    const [userMe, setUserMe] = useState<IUserDto>();
-
-    useEffect(() => {
-        getMe().then((data) => {
-            setUserMe(data);
-        });
-    }, []);
-
+export default function ShowUserMe({ userMe }: { userMe: IUserDto }) {
     return (
         <>
             {userMe && (

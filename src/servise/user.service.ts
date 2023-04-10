@@ -24,3 +24,20 @@ export async function updateMe(userMe: IUserDto) {
         body: JSON.stringify(userMe),
     });
 }
+
+export async function getAllArtistTypes() {
+    try {
+        const res = await fetch("/api/artists/artist-types", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getMusicSlyles() {}
