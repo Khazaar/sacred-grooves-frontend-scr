@@ -12,6 +12,7 @@ export default withApiAuthRequired(async function createUser(req, res) {
         console.log("E-mail :", session.user.email);
         try {
             const { accessToken } = await getAccessToken(req, res);
+            req.body.email = session.user.email;
             console.log(req.body);
             const response = await fetch(process.env.NEST_HOST + "/users/", {
                 method: "POST",

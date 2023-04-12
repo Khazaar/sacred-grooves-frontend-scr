@@ -6,6 +6,7 @@ interface IUserDto {
     lastName?: string;
     telegramName?: string;
     mapLocation?: MapLocation;
+    artist?: IArtistDto;
 }
 
 interface MapLocation {
@@ -18,6 +19,11 @@ interface MapLocation {
 }
 
 interface IArtistDto {
+    artistTypes: { artistTypeName: string }[];
+    musicStyles: { musicStyleName: string }[];
+}
+
+interface IArtistLocal {
     artistTypes: string[];
     musicStyles: string[];
 }

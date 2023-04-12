@@ -1,4 +1,5 @@
-import { getAllArtistTypes, getAllMusicSlyles } from "@/servise/user.service";
+import { updateArtist } from "@/servise/artist.service";
+import { getAllArtistTypes, getAllMusicSlyles } from "@/servise/artist.service";
 import {
     Box,
     Button,
@@ -20,8 +21,8 @@ interface MusicStyleSelected {
     isSelected: boolean;
 }
 
-export default function EditArtist() {
-    const [artist, setArtist] = useState<IArtistDto>();
+export default function EditArtist({ userMe }: { userMe: IUserDto }) {
+    //const [artist, setArtist] = useState<IArtistDto>();
     const [allArtisTypes, setAllArtisTypes] = useState<string[]>(["1"]);
     const [artistTypes, setArtistTypes] = useState<ArtistTypeSelected[]>([]);
 
@@ -48,16 +49,16 @@ export default function EditArtist() {
         setMusicStyles(updatedItems);
     };
 
-    const handleSaveArtist = () => {
-        setArtist({
+    const handleSaveArtist = async () => {
+        const newArtist: IArtistLocal = {
             artistTypes: artistTypes
                 .filter((item) => item.isSelected)
                 .map((item) => item.artistType),
             musicStyles: musicStyles
                 .filter((item) => item.isSelected)
                 .map((item) => item.musicStyle),
-        });
-        console.log(artist);
+        };
+        updateArtist(newArtist).then((data) => console.log(data));
     };
 
     useEffect(() => {
@@ -72,20 +73,42 @@ export default function EditArtist() {
     }, []);
 
     useEffect(() => {
-        setArtistTypes(
-            allArtisTypes?.map((item) => {
-                return { artistType: item, isSelected: false };
-            })
-        );
+        userMe?.artist?.artistTypes &&
+            setArtistTypes(
+                allArtisTypes.map((item) => {
+                    return {
+                        artistType: item,
+                        isSelected:
+                            (userMe?.artist?.artistTypes &&
+                                userMe.artist.artistTypes.filter(
+                                    (e) => e.artistTypeName === item
+                                ).length > 0) ||
+                            false,
+                    };
+                })
+            );
     }, [allArtisTypes]);
 
     useEffect(() => {
-        setMusicStyles(
-            allMusicStyles?.map((item) => {
-                return { musicStyle: item, isSelected: false };
-            })
-        );
+        userMe?.artist?.musicStyles &&
+            setMusicStyles(
+                allMusicStyles.map((item) => {
+                    return {
+                        musicStyle: item,
+                        isSelected:
+                            (userMe?.artist?.musicStyles &&
+                                userMe.artist.musicStyles.filter(
+                                    (e) => e.musicStyleName === item
+                                ).length > 0) ||
+                            false,
+                    };
+                })
+            );
     }, [allMusicStyles]);
+
+    // useEffect(() => {
+    //     artist && updateArtist(artist).then((data) => console.log(data));
+    // }, [artist]);
 
     return (
         <Box>
@@ -94,8 +117,8 @@ export default function EditArtist() {
                     <FormLabel component="legend">Select artist type</FormLabel>
 
                     <Box>
-                        {artistTypes?.map((item) => (
-                            <FormGroup>
+                        <FormGroup>
+                            {artistTypes?.map((item, index) => (
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -106,19 +129,21 @@ export default function EditArtist() {
                                                 );
                                             }}
                                             name={item.artistType}
+                                            key={"chb" + item.artistType}
                                         />
                                     }
+                                    key={"fcl" + index}
                                     label={item.artistType}
                                 />
-                            </FormGroup>
-                        ))}
+                            ))}
+                        </FormGroup>
                     </Box>
                 </FormControl>
                 <FormControl>
                     <FormLabel component="legend">Select music style</FormLabel>
                     <Box>
-                        {musicStyles?.map((item) => (
-                            <FormGroup>
+                        <FormGroup>
+                            {musicStyles?.map((item, index) => (
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -129,12 +154,14 @@ export default function EditArtist() {
                                                 );
                                             }}
                                             name={item.musicStyle}
+                                            key={"chb" + item.musicStyle}
                                         />
                                     }
                                     label={item.musicStyle}
+                                    key={"fcl" + index}
                                 />
-                            </FormGroup>
-                        ))}
+                            ))}
+                        </FormGroup>
                     </Box>
                 </FormControl>
             </Box>

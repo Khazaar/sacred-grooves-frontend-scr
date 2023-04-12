@@ -15,11 +15,11 @@ export default withApiAuthRequired(async function Me(req, res) {
                     }
                 );
                 const musicStylesRaw = await response.json();
-                const musicStyles: string[] = (musicStylesRaw as any[]).map(
-                    (musicStyle) => {
+                const musicStyles: string[] = (musicStylesRaw as any[])
+                    .map((musicStyle) => {
                         return musicStyle.musicStyleName as string;
-                    }
-                );
+                    })
+                    .sort((a, b) => (a > b ? 1 : -1));
                 res.status(200).json(musicStyles);
                 break;
             } catch (error) {
