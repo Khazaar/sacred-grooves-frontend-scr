@@ -1,4 +1,4 @@
-import { getMe, updateMe } from "@/servise/user.service";
+import { getMe, updateMe, uploadAvatar } from "@/service/user.service";
 import {
     TableContainer,
     Paper,
@@ -8,12 +8,18 @@ import {
     TableCell,
     TextField,
     Button,
+    Avatar,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 export default function EditUserMe() {
     const [userMe, setUserMe] = useState<IUserDto>();
+    const [currentImage, setCurrentImage] = useState<File | null>();
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>("");
+    const [progress, setProgress] = useState<number>(0);
+    const [message, setMessage] = useState<string>("");
+
     const router = useRouter();
     useEffect(() => {
         getMe().then((data) => {
@@ -31,8 +37,16 @@ export default function EditUserMe() {
     };
 
     const handleSave = async () => {
-        userMe && (await updateMe(userMe));
-        router.push("/profile");
+        //userMe && (await updateMe(userMe));
+        currentImage && (await uploadAvatar(currentImage));
+        //router.push("/profile");
+    };
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setCurrentImage(e.target.files[0]);
+            const url = URL.createObjectURL(e.target.files[0]);
+            setPreviewImageUrl(url);
+        }
     };
     return (
         <>
@@ -106,6 +120,30 @@ export default function EditUserMe() {
                     </Table>
                 </TableContainer>
             )}
+            <label htmlFor="btn-upload">
+                <input
+                    id="btn-upload"
+                    name="btn-upload"
+                    style={{ display: "none" }}
+                    type="file"
+                    onChange={handleFileChange}
+                />
+                <Button
+                    className="btn-choose"
+                    variant="outlined"
+                    component="span"
+                >
+                    Select avatar
+                </Button>
+                {/* {previewImageUrl && <img src={previewImageUrl} alt="Preview" />} */}
+                {previewImageUrl && (
+                    <Avatar
+                        alt="Remy Sharp"
+                        src={previewImageUrl}
+                        sx={{ width: 100, height: 100 }}
+                    />
+                )}
+            </label>
             <Button onClick={handleSave}>Save</Button>
         </>
     );

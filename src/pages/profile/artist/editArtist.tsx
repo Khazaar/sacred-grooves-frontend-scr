@@ -1,5 +1,5 @@
-import { updateArtist } from "@/servise/artist.service";
-import { getAllArtistTypes, getAllMusicSlyles } from "@/servise/artist.service";
+import { updateArtist } from "@/service/artist.service";
+import { getAllArtistTypes, getAllMusicSlyles } from "@/service/artist.service";
 import {
     Box,
     Button,
@@ -64,11 +64,9 @@ export default function EditArtist({ userMe }: { userMe: IUserDto }) {
     useEffect(() => {
         getAllArtistTypes().then((data) => {
             setAllArtisTypes(data);
-            console.log(allArtisTypes);
         });
         getAllMusicSlyles().then((data) => {
             setAllMusicStyles(data);
-            console.log(allMusicStyles);
         });
     }, []);
 

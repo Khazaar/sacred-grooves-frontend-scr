@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from "react";
 import AppMenu from "@/components/AppMenu";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Tabs, Typography } from "@mui/material";
 import ShowUserMe from "./user/showUserMe";
-import { getMe } from "@/servise/user.service";
+import { getMe } from "@/service/user.service";
 import { UserRoles } from "@/enums";
 import EditArtist from "./artist/editArtist";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createArtist } from "@/servise/artist.service";
+import { createArtist } from "@/service/artist.service";
+import { createOrganizer } from "@/service/organizer.service";
+import { Entries } from "type-fest";
+import { types } from "mobx-state-tree";
 
-interface IRoleClaimed {
-    role: UserRoles;
-    isClaimed: boolean;
-}
+const RolesClaimed = types
+    .model({
+        Artist: false,
+        Organizer: false,
+        SupportTeam: false,
+        Visitor: false,
+    })
+    .actions((self) => ({
+        setRoleClaimed(role: UserRoles, value: boolean) {
+            self[role] = value;
+        },
+    }));
+
+const rolesClaimed = RolesClaimed.create();
+
+// interface IRolesClaimed {
+//     [UserRoles.Artist]: boolean;
+//     [UserRoles.Organizer]: boolean;
+//     [UserRoles.SupportTeam]: boolean;
+//     [UserRoles.Visitor]: boolean;
+// }
 
 export default function Profile() {
-    //const accessToken = getAccessToken(req, res);
-    //console.log(accessToken);
-    const [rolesClaimed, setRolesClaimed] = useState<IRoleClaimed[]>([
-        { role: UserRoles.Artist, isClaimed: false },
-        { role: UserRoles.Organizer, isClaimed: false },
-        { role: UserRoles.SupportTeam, isClaimed: false },
-        { role: UserRoles.Visitor, isClaimed: false },
-    ]);
     const [userMe, setUserMe] = useState<IUserDto>();
-    const [tabValue, setTabValue] = React.useState("0");
+    const [tabValue, setTabValue] = React.useState<string>("-1");
 
     useEffect(() => {
         getMe().then((data) => {
@@ -35,20 +47,22 @@ export default function Profile() {
     }, []);
 
     useEffect(() => {
+        console.log(rolesClaimed);
+    }, [rolesClaimed]);
+
+    useEffect(() => {
         if (userMe?.artist) {
-            setRolesClaimed(
-                rolesClaimed.map((role) =>
-                    role.role == UserRoles.Artist
-                        ? { ...role, isClaimed: true }
-                        : role
-                )
-            );
+            setTabValue("0");
+            rolesClaimed.setRoleClaimed(UserRoles.Artist, true);
+        }
+        if (userMe?.organizer) {
+            rolesClaimed.setRoleClaimed(UserRoles.Organizer, true);
             setTabValue("1");
         }
     }, [userMe]);
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-        setTabValue(newValue);
+    const handleTabChange = (event: React.SyntheticEvent, value: number) => {
+        setTabValue(value.toString());
     };
 
     async function handleClaimRole(role: UserRoles) {
@@ -58,20 +72,29 @@ export default function Profile() {
                 getMe().then((data) => {
                     setUserMe(data);
                 });
-                setTabValue("1");
+                setTabValue("0");
             case UserRoles.Organizer:
-                break;
+                await createOrganizer();
+                getMe().then((data) => {
+                    setUserMe(data);
+                });
+                setTabValue("1");
             case UserRoles.SupportTeam:
                 break;
             case UserRoles.Visitor:
                 break;
         }
     }
+    interface TabPanelProps {
+        children?: React.ReactNode;
+        dir?: string;
+        index: number;
+        value: number;
+    }
 
     return (
         <>
             <AppMenu></AppMenu>
-
             <Box
                 sx={{
                     display: "flex",
@@ -82,45 +105,61 @@ export default function Profile() {
                 {userMe && <ShowUserMe userMe={userMe}></ShowUserMe>}
                 <Box sx={{ display: "flex" }}>
                     <Typography variant="h6"> Claim role:</Typography>
-                    {!rolesClaimed[0].isClaimed && (
+                    {rolesClaimed && !rolesClaimed[UserRoles.Artist] && (
                         <Button
                             onClick={() => handleClaimRole(UserRoles.Artist)}
                         >
                             Artist
                         </Button>
                     )}
-                    <Button>Organizer</Button>
-                    <Button>SupportTeam</Button>
+                    {rolesClaimed && !rolesClaimed[UserRoles.Organizer] && (
+                        <Button
+                            onClick={() => handleClaimRole(UserRoles.Organizer)}
+                        >
+                            Organizer
+                        </Button>
+                    )}
+                    <Button>Support Team</Button>
                     <Button>Visitor</Button>
                 </Box>
-                {tabValue != "0" && (
-                    <TabContext value={tabValue}>
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                            <TabList
-                                onChange={handleTabChange}
-                                aria-label="lab API tabs example"
+                {tabValue != "-1" && (
+                    <Box sx={{ minWidth: 600 }}>
+                        <TabContext value={tabValue}>
+                            <Box
+                                sx={{ borderBottom: 1, borderColor: "divider" }}
                             >
-                                {rolesClaimed.map((role, index) => {
-                                    if (role.isClaimed) {
-                                        return (
-                                            <Tab
-                                                label={role.role}
-                                                value={(index + 1).toString()}
-                                                key={"tab" + role.role}
-                                            ></Tab>
-                                        );
-                                    }
-                                })}
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                            {userMe && (
-                                <EditArtist userMe={userMe}></EditArtist>
-                            )}
-                        </TabPanel>
-                        <TabPanel value="2">Item Two</TabPanel>
-                        <TabPanel value="3">Item Three</TabPanel>
-                    </TabContext>
+                                <TabList
+                                    onChange={handleTabChange}
+                                    aria-label="basic tabs example"
+                                >
+                                    {(
+                                        Object.entries(rolesClaimed) as Entries<
+                                            typeof rolesClaimed
+                                        >
+                                    ).map((key, index, array) => {
+                                        if (key[1]) {
+                                            return (
+                                                <Tab
+                                                    label={key[0].toString()}
+                                                    value={index.toString()}
+                                                    key={"tab" + key}
+                                                ></Tab>
+                                            );
+                                        }
+                                    })}
+                                </TabList>
+                            </Box>
+                            <TabPanel value="0">
+                                {userMe && (
+                                    <EditArtist userMe={userMe}></EditArtist>
+                                )}
+                            </TabPanel>
+                            <TabPanel value="1">
+                                <Button>Create event</Button>
+                            </TabPanel>
+                            <TabPanel value="2">Item Three</TabPanel>
+                        </TabContext>
+                    </Box>
                 )}
             </Box>
         </>

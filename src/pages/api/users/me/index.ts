@@ -3,9 +3,21 @@ import {
     getAccessToken,
     getSession,
 } from "@auth0/nextjs-auth0";
+import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 
-export default withApiAuthRequired(async function Me(req, res) {
+type NextApiRequestWithFormData = NextApiRequest & {
+    file?: File;
+};
+
+export default withApiAuthRequired(async function Me(
+    req: NextApiRequestWithFormData,
+    res
+) {
+    const formData = new FormData();
+
+    req.file && formData.append("file", req.file);
+    const userDto: IUserDto = req.body;
     switch (req.method) {
         case "GET":
             try {
@@ -28,8 +40,6 @@ export default withApiAuthRequired(async function Me(req, res) {
         case "PATCH":
             try {
                 const { accessToken } = await getAccessToken(req, res);
-                console.log(accessToken);
-                console.log("PATCH", req.body);
                 const response = await fetch(
                     process.env.NEST_HOST + "/users/me",
                     {
@@ -37,7 +47,7 @@ export default withApiAuthRequired(async function Me(req, res) {
                             Authorization: `Bearer ${accessToken}`,
                             "Content-Type": "application/json",
                         },
-                        body: JSON.stringify(req.body),
+                        body: JSON.stringify(userDto),
                         method: "PATCH",
                     }
                 );
@@ -53,5 +63,8 @@ export default withApiAuthRequired(async function Me(req, res) {
 export const config = {
     api: {
         externalResolver: true,
+        bodyParser: {
+            sizeLimit: "20mb", // Set desired value here
+        },
     },
 };

@@ -7,6 +7,7 @@ interface IUserDto {
     telegramName?: string;
     mapLocation?: MapLocation;
     artist?: IArtistDto;
+    organizer?: IOrganizerDto;
 }
 
 interface MapLocation {
@@ -26,4 +27,9 @@ interface IArtistDto {
 interface IArtistLocal {
     artistTypes: string[];
     musicStyles: string[];
+}
+
+interface IOrganizerDto {
+    artistTypes: { artistTypeName: string }[];
+    musicStyles: { musicStyleName: string }[];
 }

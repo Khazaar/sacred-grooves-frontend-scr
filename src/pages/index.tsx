@@ -4,19 +4,22 @@ import { Inter } from "next/font/google";
 
 import Link from "next/link";
 import AppMenu from "@/components/AppMenu";
-import Wellcome from "@/components/Wellcome";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Wellcome from "./Wellcome";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Index() {
     const { user, error, isLoading } = useUser();
     const router = useRouter();
-    if (user) {
-        router.push("/profile");
-    }
-
+    useEffect(() => {
+        if (user) {
+            router.push("/profile");
+        } else {
+            router.push("/wellcome");
+        }
+    }, [user]);
     return (
         <Box
             sx={{
@@ -26,7 +29,6 @@ export default function Index() {
             }}
         >
             <AppMenu></AppMenu>
-            {!user && <Wellcome></Wellcome>}
         </Box>
     );
 }

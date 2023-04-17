@@ -24,3 +24,13 @@ export async function updateMe(userMe: IUserDto) {
         body: JSON.stringify(userMe),
     });
 }
+
+export async function uploadAvatar(file: File): Promise<any> {
+    let formData = new FormData();
+    formData.append("file", file);
+    return fetch("/api/users/me/avatar", {
+        // headers: { "Content-Type": "multipart/form-data" },
+        body: formData,
+        method: "POST",
+    });
+}

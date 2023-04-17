@@ -1,4 +1,4 @@
-import { getMe } from "@/servise/user.service";
+import { getMe } from "@/service/user.service";
 import {
     TableContainer,
     Paper,
@@ -13,6 +13,7 @@ import {
     Typography,
     Box,
 } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 //process.env.LOCALHOST_URL +
 
@@ -101,7 +102,14 @@ export default function ShowUserMe({ userMe }: { userMe: IUserDto }) {
                                     Telegram
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    {userMe.telegramName}
+                                    <a
+                                        href={
+                                            "https://t.me/" +
+                                            userMe.telegramName
+                                        }
+                                    >
+                                        @{userMe.telegramName}
+                                    </a>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
