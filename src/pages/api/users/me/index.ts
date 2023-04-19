@@ -1,3 +1,4 @@
+import { UserModel } from "@/models/models";
 import {
     withApiAuthRequired,
     getAccessToken,
@@ -17,7 +18,8 @@ export default withApiAuthRequired(async function Me(
     const formData = new FormData();
 
     req.file && formData.append("file", req.file);
-    const userDto: IUserDto = req.body;
+    const userDto: UserModel = req.body;
+
     switch (req.method) {
         case "GET":
             try {

@@ -4,3 +4,9 @@ export enum UserRoles {
     Visitor = "Visitor",
     SupportTeam = "SupportTeam",
 }
+
+export enum actionKeysUser {
+    view = "view",
+    create = "create",
+    edit = "edit",
+}

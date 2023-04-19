@@ -1,3 +1,6 @@
+import { UserModel } from "@/models/models";
+import axios from "axios";
+
 export async function getMe() {
     try {
         const res = await fetch("/api/users/me", {
@@ -15,7 +18,7 @@ export async function getMe() {
     }
 }
 
-export async function updateMe(userMe: IUserDto) {
+export async function updateUserMe(userMe: UserModel) {
     fetch("/api/users/me", {
         method: "PATCH",
         headers: {
@@ -28,9 +31,8 @@ export async function updateMe(userMe: IUserDto) {
 export async function uploadAvatar(file: File): Promise<any> {
     let formData = new FormData();
     formData.append("file", file);
-    return fetch("/api/users/me/avatar", {
-        // headers: { "Content-Type": "multipart/form-data" },
-        body: formData,
+    await fetch("/api/users/me/avatar", {
         method: "POST",
+        body: formData,
     });
 }

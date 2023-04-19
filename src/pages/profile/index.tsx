@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import AppMenu from "@/components/AppMenu";
 import { Box, Button, Tabs, Typography } from "@mui/material";
-import ShowUserMe from "./user/showUserMe";
+
 import { getMe } from "@/service/user.service";
-import { UserRoles } from "@/enums";
+import { UserRoles, actionKeysUser } from "@/enums";
 import EditArtist from "./artist/editArtist";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -13,6 +13,10 @@ import { createArtist } from "@/service/artist.service";
 import { createOrganizer } from "@/service/organizer.service";
 import { Entries } from "type-fest";
 import { types } from "mobx-state-tree";
+import ShowUserMe from "./user/userMy";
+import { ProfileModel, UserModel } from "@/models/models";
+import { getProfileMy } from "@/service/profile.service";
+import UserMy from "./user/userMy";
 
 const RolesClaimed = types
     .model({
@@ -37,12 +41,15 @@ const rolesClaimed = RolesClaimed.create();
 // }
 
 export default function Profile() {
-    const [userMe, setUserMe] = useState<IUserDto>();
+    const [profileMy, setProfileMy] = useState<ProfileModel>(
+        new ProfileModel("")
+    );
     const [tabValue, setTabValue] = React.useState<string>("-1");
 
     useEffect(() => {
-        getMe().then((data) => {
-            setUserMe(data);
+        getProfileMy().then((data) => {
+            data && setProfileMy(data);
+            console.log(data);
         });
     }, []);
 
@@ -51,15 +58,15 @@ export default function Profile() {
     }, [rolesClaimed]);
 
     useEffect(() => {
-        if (userMe?.artist) {
+        if (profileMy?.artist) {
             setTabValue("0");
             rolesClaimed.setRoleClaimed(UserRoles.Artist, true);
         }
-        if (userMe?.organizer) {
+        if (profileMy?.organizer) {
             rolesClaimed.setRoleClaimed(UserRoles.Organizer, true);
             setTabValue("1");
         }
-    }, [userMe]);
+    }, [profileMy]);
 
     const handleTabChange = (event: React.SyntheticEvent, value: number) => {
         setTabValue(value.toString());
@@ -70,13 +77,13 @@ export default function Profile() {
             case UserRoles.Artist:
                 await createArtist();
                 getMe().then((data) => {
-                    setUserMe(data);
+                    //setUserMe(data);
                 });
                 setTabValue("0");
             case UserRoles.Organizer:
                 await createOrganizer();
                 getMe().then((data) => {
-                    setUserMe(data);
+                    //setUserMe(data);
                 });
                 setTabValue("1");
             case UserRoles.SupportTeam:
@@ -95,6 +102,7 @@ export default function Profile() {
     return (
         <>
             <AppMenu></AppMenu>
+
             <Box
                 sx={{
                     display: "flex",
@@ -102,7 +110,14 @@ export default function Profile() {
                     alignItems: "center",
                 }}
             >
-                {userMe && <ShowUserMe userMe={userMe}></ShowUserMe>}
+                {profileMy && (
+                    <UserMy
+                        userProps={{
+                            profileMy: profileMy,
+                        }}
+                    ></UserMy>
+                )}
+
                 <Box sx={{ display: "flex" }}>
                     <Typography variant="h6"> Claim role:</Typography>
                     {rolesClaimed && !rolesClaimed[UserRoles.Artist] && (
@@ -149,11 +164,11 @@ export default function Profile() {
                                     })}
                                 </TabList>
                             </Box>
-                            <TabPanel value="0">
-                                {userMe && (
-                                    <EditArtist userMe={userMe}></EditArtist>
+                            {/* <TabPanel value="0">
+                                {profileMy && (
+                                    // <EditArtist userMe={userMy}></EditArtist>
                                 )}
-                            </TabPanel>
+                            </TabPanel> */}
                             <TabPanel value="1">
                                 <Button>Create event</Button>
                             </TabPanel>

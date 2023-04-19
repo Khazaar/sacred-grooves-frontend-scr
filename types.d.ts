@@ -33,3 +33,8 @@ interface IOrganizerDto {
     artistTypes: { artistTypeName: string }[];
     musicStyles: { musicStyleName: string }[];
 }
+
+interface IPresignedPost {
+    url: string;
+    key: string;
+}
