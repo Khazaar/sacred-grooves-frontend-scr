@@ -1,7 +1,5 @@
-import { actionKeysUser } from "@/enums";
+// import { actionKeysUser } from "@/enums";
 import { ProfileModel, UserModel } from "@/models/models";
-import { getMe, updateUserMe } from "@/service/user.service";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import {
     TableContainer,
     Paper,
@@ -10,49 +8,44 @@ import {
     TableCell,
     TableRow,
     Button,
-    Card,
-    CardContent,
-    CardActions,
     Typography,
     Box,
     TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
-import AvatarMy from "./avatarMy";
+import { ChangeEvent } from "react";
+import AvatarMy from "./AvatarProfile";
+
+import { observer } from "mobx-react";
+import { updateUserMe } from "@/service/user.service";
 //process.env.LOCALHOST_URL +
 
 type UserProps = {
-    profileMy: ProfileModel;
+    user: UserModel;
 };
 
-export default function UserMy({ userProps }: { userProps: UserProps }) {
-    const [actionKeyUser, setActionKeyUser] = useState<actionKeysUser>(
-        actionKeysUser.view
-    );
-    const { user, error, isLoading } = useUser();
-    const [userMe, setUserMe] = useState<UserModel>(new UserModel());
-
+function User({ userProps }: { userProps: UserProps }) {
     const handleUserInfoChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        const name = e.target.name;
-        setUserMe((prevData) => ({
-            ...prevData,
-            [name]: e.target.value,
-        }));
+        // const name = e.target.name;
+        // setUserMe((prevData) => ({
+        //     ...prevData,
+        //     [name]: e.target.value,
+        // }));
         //console.log(userMe);
     };
-    useEffect(() => {
-        if (userProps.profileMy && !userProps.profileMy.user) {
-            setActionKeyUser(actionKeysUser.edit);
-            userMe.email = user?.email as string;
-            setUserMe(userMe);
-        } else {
-            setActionKeyUser(actionKeysUser.view);
-            userProps.profileMy.user && setUserMe(userProps.profileMy.user);
-        }
-    }, [userProps]);
+    // useEffect(() => {
+    //     if (!userProps.user) {
+    //         // userProps.user.setActionKeyUser(actionKeysUser.edit);
+    //         // userMe.email = user?.email as string;
+    //         // setUserMe(userMe);
+    //     } else {
+    //         // setActionKeyUser(actionKeysUser.view);
+    //         // userProps.profileMy.user && setUserMe(userProps.profileMy.user);
+    //     }
+    // }, [userProps]);
+    // useEffect(() => {}, []);
     return (
         <Box
             sx={{
@@ -75,20 +68,22 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                     <Typography variant="h5" component="div">
                         User information
                     </Typography>
-                    {actionKeyUser == actionKeysUser.view && (
+                    {!userProps.user.isEditing && (
                         <Button
                             onClick={() => {
-                                setActionKeyUser(actionKeysUser.edit);
+                                //userProps.user.setEditingState(true);
+                                userProps.user.isEditing = true;
+                                console.log(userProps.user);
                             }}
                         >
                             Edit
                         </Button>
                     )}
-                    {actionKeyUser == actionKeysUser.edit && (
+                    {userProps.user.isEditing && (
                         <Button
                             onClick={() => {
-                                setActionKeyUser(actionKeysUser.view);
-                                updateUserMe(userMe);
+                                updateUserMe(userProps.user);
+                                userProps.user.isEditing = false;
                             }}
                         >
                             Save changes
@@ -96,7 +91,7 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                     )}
                     <Button href="/api/auth/logout">Log out</Button>
                 </Box>
-                {userMe && (
+                {userProps.user && (
                     <TableContainer component={Paper}>
                         <Table
                             sx={{ minWidth: 400, maxWidth: 600 }}
@@ -115,14 +110,22 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userMe.nickName}
+                                            value={userProps.user.nickName}
                                             size="small"
-                                            onChange={handleUserInfoChange}
+                                            onChange={(
+                                                e: ChangeEvent<
+                                                    | HTMLInputElement
+                                                    | HTMLTextAreaElement
+                                                >
+                                            ) => {
+                                                userProps.user.nickName =
+                                                    e.target.value;
+                                                console.log(
+                                                    userProps.user.nickName
+                                                );
+                                            }}
                                             name="nickName"
-                                            disabled={
-                                                actionKeyUser ==
-                                                actionKeysUser.view
-                                            }
+                                            disabled={!userProps.user.isEditing}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -138,14 +141,11 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userMe.firstName}
+                                            value={userProps.user.firstName}
                                             size="small"
                                             onChange={handleUserInfoChange}
                                             name="firstName"
-                                            disabled={
-                                                actionKeyUser ==
-                                                actionKeysUser.view
-                                            }
+                                            disabled={!userProps.user.isEditing}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -161,14 +161,11 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userMe.lastName}
+                                            value={userProps.user.lastName}
                                             size="small"
                                             onChange={handleUserInfoChange}
                                             name="lastName"
-                                            disabled={
-                                                actionKeyUser ==
-                                                actionKeysUser.view
-                                            }
+                                            disabled={!userProps.user.isEditing}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -184,14 +181,11 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userMe.email}
+                                            value={userProps.user.email}
                                             size="small"
                                             onChange={handleUserInfoChange}
                                             name="email"
-                                            disabled={
-                                                actionKeyUser ==
-                                                actionKeysUser.view
-                                            }
+                                            disabled={!userProps.user.isEditing}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -204,7 +198,7 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <a
                                             href={
                                                 "https://t.me/" +
-                                                userMe.telegramName
+                                                userProps.user.telegramName
                                             }
                                         >
                                             Telegram
@@ -214,14 +208,11 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userMe.telegramName}
+                                            value={userProps.user.telegramName}
                                             size="small"
                                             onChange={handleUserInfoChange}
                                             name="telegramName"
-                                            disabled={
-                                                actionKeyUser ==
-                                                actionKeysUser.view
-                                            }
+                                            disabled={!userProps.user.isEditing}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -233,9 +224,32 @@ export default function UserMy({ userProps }: { userProps: UserProps }) {
 
             <AvatarMy
                 avatarProps={{
-                    profileMy: userProps.profileMy,
+                    user: userProps.user,
                 }}
             ></AvatarMy>
         </Box>
     );
 }
+
+// function User2() {
+//     const usr = new UserModel();
+//     const a = new Athlete("Egor", 1, 1);
+//     return (
+//         <>
+//             <Button
+//                 onClick={() => {
+//                     usr.setEditingState(true);
+//                     a.wishHappyBirthday();
+//                     console.log(usr);
+//                 }}
+//             >
+//                 Set true
+//             </Button>
+//             <Button>{a.age}</Button>
+//             <Button onClick={()=>{
+
+//             }}>Create user</Button>
+//         </>
+//     );
+// }
+export default observer(User);

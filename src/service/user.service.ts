@@ -31,8 +31,10 @@ export async function updateUserMe(userMe: UserModel) {
 export async function uploadAvatar(file: File): Promise<any> {
     let formData = new FormData();
     formData.append("file", file);
-    await fetch("/api/users/me/avatar", {
+    const res = await fetch("/api/users/me/avatar", {
         method: "POST",
         body: formData,
     });
+    const data = await res.json();
+    return data.url;
 }

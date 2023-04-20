@@ -1,4 +1,4 @@
-import { updateArtist } from "@/service/artist.service";
+import { updateArtistMe } from "@/service/artist.service";
 import { getAllArtistTypes, getAllMusicSlyles } from "@/service/artist.service";
 import {
     Box,
@@ -58,7 +58,7 @@ export default function EditArtist({ userMe }: { userMe: IUserDto }) {
                 .filter((item) => item.isSelected)
                 .map((item) => item.musicStyle),
         };
-        updateArtist(newArtist).then((data) => console.log(data));
+        updateArtistMe(newArtist).then((data) => console.log(data));
     };
 
     useEffect(() => {

@@ -1,47 +1,39 @@
+import { action, makeAutoObservable, makeObservable, observable } from "mobx";
+
 export class UserModel {
-    email?: string = "";
-    nickName?: string = "";
-    firstName?: string = "";
-    lastName?: string = "";
+    email: string = "";
+    nickName: string = "";
+    firstName: string = "";
+    lastName: string = "";
     telegramName?: string = "";
-    avatar?: PictureModel;
+    avatar: PictureModel;
     mapLocation?: MapLocationModel;
-    constructor(
-        email?: string,
-        nickName?: string,
-        firstName?: string,
-        lastName?: string,
-        telegramName?: string
-    ) {
-        this.email = email;
-        this.nickName = nickName;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.telegramName = telegramName;
+    isEditing: boolean = false;
+
+    constructor() {
+        makeObservable(this, { isEditing: observable, nickName: observable });
+        this.avatar = new PictureModel();
+        //makeAutoObservable(this);
     }
 
-    // setEmail(email: string) {
-    //     this.email = email;
+    // setEditingState(isEditing: boolean) {
+    //     this.isEditing = isEditing;
+    //     console.log("isEditing", this.isEditing);
     // }
 }
 
 export class PictureModel {
-    title?: string;
-    pictureS3Url?: string;
-    constructor(title?: string, pictureS3Url?: string) {
-        this.title = title;
-        this.pictureS3Url = pictureS3Url;
+    title?: string = "";
+    pictureS3Url?: string = "";
+    isAvaratSelected: boolean = false;
+    constructor() {
+        makeObservable(this, { title: observable, pictureS3Url: observable });
     }
 }
 
 export class ArtistModel {
     artistTypes?: string[];
     musicStyles?: string[];
-
-    constructor(artist: ArtistModel) {
-        this.artistTypes = artist.artistTypes;
-        this.musicStyles = artist.musicStyles;
-    }
 }
 export class OrganizerModel {
     mainLocation?: string;
@@ -51,38 +43,16 @@ export class OrganizerModel {
     }
 }
 export class ProfileModel {
-    user?: UserModel;
+    user: UserModel;
     artist?: ArtistModel;
     organizer?: OrganizerModel;
     auth0sub?: string;
-    constructor(auth0sub: string) {
+
+    constructor(auth0sub?: string) {
         this.auth0sub = auth0sub;
-    }
-    updateUser(
-        email?: string,
-        nickName?: string,
-        firstName?: string,
-        lastName?: string,
-        telegramName?: string
-    ) {
-        this.user = {
-            email,
-            nickName,
-            firstName,
-            lastName,
-            telegramName,
-        };
-    }
-    updateArtist(artistTypes?: string[], musicStyles?: string[]) {
-        this.artist = {
-            artistTypes,
-            musicStyles,
-        };
-    }
-    updateOrganizer(mainLocation?: string) {
-        this.organizer = {
-            mainLocation,
-        };
+        this.user = new UserModel();
+        //makeAutoObservable(this);
+        makeObservable(this, { user: observable });
     }
 }
 

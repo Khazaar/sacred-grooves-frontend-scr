@@ -1,6 +1,6 @@
-export async function createArtist() {
+export async function createArtistMe() {
     try {
-        const res = await fetch("/api/artists/", {
+        const res = await fetch("/api/artists/me", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -11,7 +11,7 @@ export async function createArtist() {
         console.log(error);
     }
 }
-export async function updateArtist(data: IArtistLocal) {
+export async function updateArtistMe(data: IArtistLocal) {
     try {
         const res = await fetch("/api/artists/me", {
             method: "PATCH",

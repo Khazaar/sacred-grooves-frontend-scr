@@ -13,11 +13,17 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import { observer } from "mobx-react";
+import { UserModel } from "@/models/models";
 
 const pages = ["DJs", "Musicians", "Organizers"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-export default function AppMenu() {
+type AppMenuProps = {
+    user: UserModel;
+};
+
+function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
     );
@@ -106,7 +112,7 @@ export default function AppMenu() {
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon
+                    <MusicNoteIcon
                         sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
                     />
                     <Typography
@@ -146,7 +152,10 @@ export default function AppMenu() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open profile page">
                             <IconButton sx={{ p: 0 }} href="/profile">
-                                <Avatar alt="Remy Sharp" />
+                                <Avatar
+                                    src={appMenuProps?.user.avatar.pictureS3Url}
+                                    alt="Remy Sharp"
+                                />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -155,3 +164,5 @@ export default function AppMenu() {
         </AppBar>
     );
 }
+
+export default observer(AppMenu);
