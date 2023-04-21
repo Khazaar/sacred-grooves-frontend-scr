@@ -34,6 +34,7 @@ export class PictureModel {
 export class ArtistModel {
     artistTypes?: string[];
     musicStyles?: string[];
+    profileId?: number;
 }
 export class OrganizerModel {
     mainLocation?: string;

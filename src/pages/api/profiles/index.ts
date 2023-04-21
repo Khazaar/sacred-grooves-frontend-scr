@@ -18,8 +18,16 @@ export default withApiAuthRequired(async function Me(
         case "GET":
             try {
                 const { accessToken } = await getAccessToken(req, res);
+                // //const url = new URL(req.url as any);
+                // const paramsIncome = new URLSearchParams(req.url as any);
+                const targetSub = req.query.targetSub;
+                const targetRole = req.query.targetRole;
+                const paramsOutcome = new URLSearchParams();
+                paramsOutcome.append("targetSub", targetSub as any);
+                paramsOutcome.append("targetRole", targetRole as any);
+
                 const response = await fetch(
-                    process.env.NEST_HOST + "/profiles/me",
+                    process.env.NEST_HOST + "/profiles?" + paramsOutcome,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,

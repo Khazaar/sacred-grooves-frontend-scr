@@ -56,7 +56,7 @@ function AvatarProfile({ avatarProps }: { avatarProps: AvatarProps }) {
             </label>
             {/* {previewImageUrl && <img src={previewImageUrl} alt="Preview" />} */}
 
-            <Box sx={{ width: 200, height: 200 }}>
+            <Box sx={{ width: 200 }}>
                 <img
                     alt="Avatar"
                     width="100%"

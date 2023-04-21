@@ -1,24 +1,34 @@
 import type { AppProps } from "next/app";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { UserProvider, useUser } from "@auth0/nextjs-auth0/client";
 import { MyProfileProvider } from "@/MyProfileProvider";
-import { getProfileMy } from "@/service/profile.service";
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 import { ProfileModel } from "@/models/models";
 import { theme } from "@/assets/theme";
-import { ThemeProvider } from "@emotion/react";
+import { CacheProvider, ThemeProvider } from "@emotion/react";
+import createEmotionCache from "@/utility/createEmotionCache";
+import AppMenu from "./components/AppMenu";
+import Layout from "./components/Layout";
 
-export default function App({ Component, pageProps }: AppProps) {
-    const [profileMy, setProfileMy] = useState<ProfileModel>();
-    useEffect(() => {
-        getProfileMy().then((data) => {
-            setProfileMy(data);
-        });
-    }, []);
+const clientSideEmotionCache = createEmotionCache();
+
+export default function App(props: any) {
+    const {
+        Component,
+        emotionCache = clientSideEmotionCache,
+        pageProps,
+    } = props;
+
     return (
-        <ThemeProvider theme={theme}>
-            <UserProvider>
-                <Component {...pageProps} />
-            </UserProvider>
-        </ThemeProvider>
+        <CacheProvider value={emotionCache}>
+            <ThemeProvider theme={theme}>
+                <UserProvider>
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                </UserProvider>
+            </ThemeProvider>
+        </CacheProvider>
     );
 }

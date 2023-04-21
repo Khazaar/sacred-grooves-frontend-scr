@@ -1,11 +1,21 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { Box, Button, Card, ThemeProvider } from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    ThemeProvider,
+    Typography,
+} from "@mui/material";
 import { Inter } from "next/font/google";
 
 import { theme } from "@/assets/theme";
 import AppMenu from "@/pages/components/AppMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ProfileModel } from "@/models/models";
+import { getProfiles } from "@/service/profile.service";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +29,33 @@ export default function Index() {
             router.push("/wellcome");
         }
     }, [user]);
+
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-            }}
-        >
-            <AppMenu></AppMenu>
-        </Box>
+        <>
+            <Box sx={{ marginTop: "2rem" }}>
+                <Card sx={{ minWidth: 275, maxWidth: 500 }}>
+                    <CardContent>
+                        <Typography
+                            color="text.secondary"
+                            gutterBottom
+                            variant="h5"
+                        >
+                            Wellcome to the Sacred Grooves!!
+                        </Typography>
+
+                        <Typography variant="body2">
+                            Our platform is designet to leverage communication
+                            between DJs, musicians, and organizers.
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                            Please, login to the platform
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button href="/api/auth/login">Login</Button>
+                    </CardActions>
+                </Card>
+            </Box>
+        </>
     );
 }

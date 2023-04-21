@@ -15,15 +15,16 @@ import AdbIcon from "@mui/icons-material/Adb";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { observer } from "mobx-react";
 import { UserModel } from "@/models/models";
+import { useRouter } from "next/router";
 
-const pages = ["DJs", "Musicians", "Organizers"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["Community", "Events", "Mission"];
 
 type AppMenuProps = {
-    user: UserModel;
+    user: UserModel | undefined;
 };
 
 function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
+    const router = useRouter();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
     );
@@ -41,6 +42,7 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
+    const appTitle = "Sacred Grooves";
 
     return (
         <AppBar position="static">
@@ -57,13 +59,12 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                         sx={{
                             mr: 2,
                             display: { xs: "none", md: "flex" },
-                            fontFamily: "Default",
                             fontWeight: 700,
                             color: "inherit",
                             textDecoration: "none",
                         }}
                     >
-                        Sacred Grooves
+                        {appTitle}
                     </Typography>
 
                     <Box
@@ -97,14 +98,15 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                             sx={{
-                                display: { xs: "block", md: "none" },
+                                display: {
+                                    xs: "block",
+                                    sm: "none",
+                                    md: "none",
+                                },
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem
-                                    key={page}
-                                    onClick={handleCloseNavMenu}
-                                >
+                                <MenuItem key={page} onClick={() => {}}>
                                     <Typography textAlign="center">
                                         {page}
                                     </Typography>
@@ -124,24 +126,30 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                             mr: 2,
                             display: { xs: "flex", md: "none" },
                             flexGrow: 1,
-                            fontFamily: "default",
                             fontWeight: 700,
                             color: "inherit",
                             textDecoration: "none",
                         }}
                     >
-                        Sacred Grooves
+                        {appTitle}
                     </Typography>
                     <Box
                         sx={{
                             flexGrow: 1,
-                            display: { xs: "none", md: "flex" },
+                            display: {
+                                xs: "none",
+                                sm: "flex",
+                                md: "flex",
+                                lg: "flex",
+                            },
                         }}
                     >
                         {pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
+                                onClick={() => {
+                                    router.push(`/${page.toLowerCase()}`);
+                                }}
                                 sx={{ my: 2, color: "white", display: "block" }}
                             >
                                 {page}
@@ -153,7 +161,9 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                         <Tooltip title="Open profile page">
                             <IconButton sx={{ p: 0 }} href="/profile">
                                 <Avatar
-                                    src={appMenuProps?.user.avatar.pictureS3Url}
+                                    src={
+                                        appMenuProps?.user?.avatar.pictureS3Url
+                                    }
                                     alt="Remy Sharp"
                                 />
                             </IconButton>

@@ -1,3 +1,5 @@
+import { ArtistModel } from "@/models/models";
+
 export async function createArtistMe() {
     try {
         const res = await fetch("/api/artists/me", {
@@ -49,6 +51,27 @@ export async function getAllMusicSlyles() {
             },
         });
         return await res.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getAllArtists() {
+    try {
+        const res = await fetch("/api/artists/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const artists: ArtistModel[] = [];
+        const data: ArtistModel[] = await res.json();
+        data.forEach((artist) => {
+            const art = new ArtistModel();
+            art.profileId = artist.profileId;
+            artists.push(art);
+        });
+        return artists;
     } catch (error) {
         console.log(error);
     }
