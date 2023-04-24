@@ -26,13 +26,12 @@ export default function Index() {
         if (user) {
             router.push("/profile");
         } else {
-            router.push("/wellcome");
         }
     }, [user]);
 
     return (
         <>
-            <Box sx={{ marginTop: "2rem" }}>
+            <Box sx={{ margin: "2rem auto", width: "70%" }}>
                 <Card sx={{ minWidth: 275, maxWidth: 500 }}>
                     <CardContent>
                         <Typography

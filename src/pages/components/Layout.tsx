@@ -16,7 +16,7 @@ export default function Layout({ children }: LayoutProps) {
                 data && setProfileMy(data[0]);
                 console.log(data);
             });
-    }, []);
+    }, [user]);
     return (
         <>
             <AppMenu

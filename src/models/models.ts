@@ -1,4 +1,16 @@
-import { action, makeAutoObservable, makeObservable, observable } from "mobx";
+import { getProfilesApi } from "@/pages/api/profiles";
+import { getProfiles } from "@/service/profile.service";
+import {
+    action,
+    makeAutoObservable,
+    makeObservable,
+    observable,
+    runInAction,
+} from "mobx";
+enum Roles {
+    artist = "artist",
+    organizer = "organizer",
+}
 
 export class UserModel {
     email: string = "";
@@ -13,13 +25,7 @@ export class UserModel {
     constructor() {
         makeObservable(this, { isEditing: observable, nickName: observable });
         this.avatar = new PictureModel();
-        //makeAutoObservable(this);
     }
-
-    // setEditingState(isEditing: boolean) {
-    //     this.isEditing = isEditing;
-    //     console.log("isEditing", this.isEditing);
-    // }
 }
 
 export class PictureModel {
@@ -39,8 +45,8 @@ export class ArtistModel {
 export class OrganizerModel {
     mainLocation?: string;
 
-    constructor(organizer: OrganizerModel) {
-        this.mainLocation = organizer.mainLocation;
+    constructor() {
+        makeAutoObservable(this);
     }
 }
 export class ProfileModel {
@@ -48,12 +54,19 @@ export class ProfileModel {
     artist?: ArtistModel;
     organizer?: OrganizerModel;
     auth0sub?: string;
+    roles?: Roles[] = [];
 
     constructor(auth0sub?: string) {
         this.auth0sub = auth0sub;
         this.user = new UserModel();
-        //makeAutoObservable(this);
-        makeObservable(this, { user: observable });
+        makeObservable(this, { user: observable, getRoles: action });
+    }
+
+    getRoles() {
+        this.roles = [];
+        if (this.artist) this.roles.push(Roles.artist);
+        if (this.organizer) this.roles.push(Roles.organizer);
+        return this.roles;
     }
 }
 
@@ -66,17 +79,35 @@ export class MapLocationModel {
     country?: string;
 }
 
-// export class IArtistDto {
-//     artistTypes: { artistTypeName: string }[];
-//     musicStyles: { musicStyleName: string }[];
-// }
+export class CommunityModel {
+    profiles: ProfileModel[] = [];
+    state: "pending" | "done" | "error" = "pending";
+    constructor() {
+        makeObservable(this, {
+            profiles: observable,
+            state: observable,
+            fetchCommunity: action,
+            getAllSubs: action,
+        });
+    }
+    async fetchCommunity() {
+        try {
+            const profiles = await getProfiles(undefined, "any");
+            if (profiles) this.profiles = profiles;
+            this.state = "done";
+            console.log("Community fetched");
+            //console.log(this.profiles);
+        } catch (error) {
+            this.state = "error";
+            console.log(error);
+        }
+    }
 
-// export class IArtistLocal {
-//     artistTypes: string[];
-//     musicStyles: string[];
-// }
+    getProfileBySub(sub: string) {
+        return this.profiles.find((prf) => prf.auth0sub === sub);
+    }
 
-// export class IOrganizerDto {
-//     artistTypes: { artistTypeName: string }[];
-//     musicStyles: { musicStyleName: string }[];
-// }
+    getAllSubs() {
+        return this.profiles.map((prf) => prf.auth0sub);
+    }
+}

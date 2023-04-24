@@ -10,6 +10,7 @@ import { CacheProvider, ThemeProvider } from "@emotion/react";
 import createEmotionCache from "@/utility/createEmotionCache";
 import AppMenu from "./components/AppMenu";
 import Layout from "./components/Layout";
+import { CommunityProvider } from "./components/CommunityStore";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -24,9 +25,11 @@ export default function App(props: any) {
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
                 <UserProvider>
-                    <Layout>
-                        <Component {...pageProps} />
-                    </Layout>
+                    <CommunityProvider>
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
+                    </CommunityProvider>
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>

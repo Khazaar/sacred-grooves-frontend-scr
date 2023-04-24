@@ -10,59 +10,43 @@ type NextApiRequestWithFormData = NextApiRequest & {
     file?: File;
 };
 
-export default withApiAuthRequired(async function Me(
+export async function getProfilesApi(
+    targetSub: string | undefined,
+    targetRole: string | undefined
+) {
+    const paramsOutcome = new URLSearchParams();
+    if (targetSub) paramsOutcome.append("targetSub", targetSub as any);
+    if (targetRole) paramsOutcome.append("targetRole", targetRole as any);
+    const response = await fetch(
+        process.env.NEST_HOST + "/profiles?" + paramsOutcome,
+        {
+            method: "GET",
+        }
+    );
+    return await response.json();
+}
+
+export default async function getProfiles(
     req: NextApiRequestWithFormData,
-    res
+    res: any
 ) {
     switch (req.method) {
         case "GET":
             try {
-                const { accessToken } = await getAccessToken(req, res);
+                //const { accessToken } = await getAccessToken(req, res);
                 // //const url = new URL(req.url as any);
                 // const paramsIncome = new URLSearchParams(req.url as any);
-                const targetSub = req.query.targetSub;
-                const targetRole = req.query.targetRole;
-                const paramsOutcome = new URLSearchParams();
-                paramsOutcome.append("targetSub", targetSub as any);
-                paramsOutcome.append("targetRole", targetRole as any);
+                const targetSub = req.query.targetSub as string;
+                const targetRole = req.query.targetRole as string;
+                const data = await getProfilesApi(targetSub, targetRole);
 
-                const response = await fetch(
-                    process.env.NEST_HOST + "/profiles?" + paramsOutcome,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                        method: "GET",
-                    }
-                );
-                const profileMe = await response.json();
-                res.status(200).json(profileMe);
+                res.status(200).json(data);
                 break;
             } catch (error) {
                 console.error(error);
             }
-        // case "PATCH":
-        //     try {
-        //         const { accessToken } = await getAccessToken(req, res);
-        //         const response = await fetch(
-        //             process.env.NEST_HOST + "/users/me",
-        //             {
-        //                 headers: {
-        //                     Authorization: `Bearer ${accessToken}`,
-        //                     "Content-Type": "application/json",
-        //                 },
-        //                 body: JSON.stringify(userDto),
-        //                 method: "PATCH",
-        //             }
-        //         );
-        //         const userMe = await response.json();
-        //         res.status(200).json(userMe);
-        //         break;
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
     }
-});
+}
 
 export const config = {
     api: {
