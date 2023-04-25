@@ -5,19 +5,11 @@ import {
     Card,
     CardActions,
     CardContent,
-    ThemeProvider,
     Typography,
 } from "@mui/material";
 import { Inter } from "next/font/google";
-
-import { theme } from "@/assets/theme";
-import AppMenu from "@/pages/components/AppMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ProfileModel } from "@/models/models";
-import { getProfiles } from "@/service/profile.service";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Index() {
     const { user, error, isLoading } = useUser();

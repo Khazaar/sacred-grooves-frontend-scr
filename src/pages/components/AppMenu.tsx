@@ -14,10 +14,10 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { observer } from "mobx-react";
-import { UserModel } from "@/models/models";
 import { useRouter } from "next/router";
+import { UserModel } from "@/models/userModel";
 
-const pages = ["Community", "Events", "Mission"];
+const pages = ["Profiles", "Events", "Mission"];
 
 type AppMenuProps = {
     user: UserModel | undefined;

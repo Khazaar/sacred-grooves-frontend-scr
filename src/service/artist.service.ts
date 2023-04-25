@@ -1,4 +1,4 @@
-import { ArtistModel } from "@/models/models";
+import { ArtistModel } from "@/models/artistModel";
 
 export async function createArtistMe() {
     try {

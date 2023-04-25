@@ -1,0 +1,127 @@
+import { getProfilesData } from "@/service/profile.service";
+import { enableStaticRendering, observer } from "mobx-react";
+import React, { useContext, useEffect, useState } from "react";
+
+import ProfileItem from "../components/ProfileItem";
+import { action } from "mobx";
+
+import {
+    Button,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    Avatar,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import router from "next/router";
+import { MobxContext } from "../_app";
+import { ProfileModel } from "@/models/profileModel";
+
+// enable static rendering ONLY on server
+const isServer = typeof window === "undefined";
+enableStaticRendering(isServer);
+
+export const getServerSideProps = async () => {
+    console.log("making server request before app");
+    // here could be any async request for fetching data
+    const params = new URLSearchParams();
+    params.append("targetRole", "targetRole");
+
+    const response = await fetch(
+        process.env.NEST_HOST + "/profiles?" + params,
+        {
+            method: "GET",
+        }
+    );
+    const profilesData: any[] = await response.json();
+
+    return {
+        props: {
+            initialState: {
+                profiles: profilesData,
+            },
+        },
+    };
+};
+
+function IndexProfiles() {
+    const profilesContext = useContext(MobxContext) as any;
+    // useEffect(() => {
+    //     community.fetchCommunity().then((data) => {
+    //         console.log(data);
+    //     });
+    // }, []);
+    console.log("profilesContext.profiles here:", profilesContext.profiles);
+
+    return (
+        <>
+            <Typography variant="h4" align="center">
+                Our community
+            </Typography>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Avatar</TableCell>
+                            <TableCell align="right">Nick name</TableCell>
+                            <TableCell align="right">First name</TableCell>
+                            <TableCell align="right">Last name</TableCell>
+                            <TableCell align="right">Roles</TableCell>
+                            <TableCell align="right">Address</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {/* {profilesContext.profiles?.state == "done" && */}
+                        {profilesContext.profiles.map((prf: ProfileModel) => (
+                            <TableRow
+                                key={prf.auth0sub}
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                                onClick={() => {
+                                    router.push(`/profiles/1`);
+                                }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    <Avatar
+                                        alt={prf.user.nickName}
+                                        src={prf.user.avatar.pictureS3Url}
+                                    />
+                                </TableCell>
+                                <TableCell align="right">
+                                    {prf.user.nickName}
+                                </TableCell>
+
+                                <TableCell align="right">
+                                    {prf.user.firstName}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {prf.user.lastName}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {prf.getRoles().map((role) => (
+                                        <Typography variant="body2" key={role}>
+                                            {role}
+                                        </Typography>
+                                    ))}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {prf.user.mapLocation?.address}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
+    );
+}
+
+export default observer(IndexProfiles);

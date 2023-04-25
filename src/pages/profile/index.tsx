@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import AppMenu from "@/pages/components/AppMenu";
 import { UserRoles } from "@/enums";
 import { types } from "mobx-state-tree";
-import { CommunityModel, ProfileModel, UserModel } from "@/models/models";
+
 // import { getProfileBySub } from "@/service/profile.service";
 import ProfileMy from "../components/ProfileMy";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { getProfiles } from "@/service/profile.service";
-import { useCommunity } from "../components/CommunityStore";
+
 import { toJS } from "mobx";
+import { ProfileModel } from "@/models/profileModel";
+import { ProfilesModel } from "@/models/profilesModel";
 
 export async function getAllProfilesSubs() {
-    const community = new CommunityModel();
+    const community = new ProfilesModel();
 
     await community.fetchCommunity();
     return community.getAllSubs();

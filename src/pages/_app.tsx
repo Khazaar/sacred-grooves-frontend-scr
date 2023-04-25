@@ -1,18 +1,17 @@
 import type { AppProps } from "next/app";
 import { UserProvider, useUser } from "@auth0/nextjs-auth0/client";
-import { MyProfileProvider } from "@/MyProfileProvider";
-import { useRouter } from "next/navigation";
 
-import { useEffect, useState } from "react";
-import { ProfileModel } from "@/models/models";
 import { theme } from "@/assets/theme";
 import { CacheProvider, ThemeProvider } from "@emotion/react";
 import createEmotionCache from "@/utility/createEmotionCache";
 import AppMenu from "./components/AppMenu";
 import Layout from "./components/Layout";
-import { CommunityProvider } from "./components/CommunityStore";
+import { createContext } from "react";
+import { useProfiles } from "./profiles/utils";
+import { ProfilesModel } from "@/models/profilesModel";
 
 const clientSideEmotionCache = createEmotionCache();
+export const MobxContext = createContext({});
 
 export default function App(props: any) {
     const {
@@ -20,16 +19,17 @@ export default function App(props: any) {
         emotionCache = clientSideEmotionCache,
         pageProps,
     } = props;
+    const profiles = useProfiles(pageProps.initialState);
 
     return (
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
                 <UserProvider>
-                    <CommunityProvider>
+                    <MobxContext.Provider value={profiles}>
                         <Layout>
                             <Component {...pageProps} />
                         </Layout>
-                    </CommunityProvider>
+                    </MobxContext.Provider>
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>

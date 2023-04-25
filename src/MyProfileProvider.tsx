@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
 import React, { useContext, useEffect, useRef } from "react";
-import { ProfileModel } from "./models/models";
 
 // export default class TeamStore {
 //     constructor(players: Athlete[]) {
