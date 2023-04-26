@@ -7,11 +7,17 @@ import createEmotionCache from "@/utility/createEmotionCache";
 import AppMenu from "./components/AppMenu";
 import Layout from "./components/Layout";
 import { createContext } from "react";
-import { useProfiles } from "./profiles/utils";
+import { useProfiles } from "../service/use.service";
 import { ProfilesModel } from "@/models/profilesModel";
+import { ProfileModel } from "@/models/profileModel";
 
 const clientSideEmotionCache = createEmotionCache();
-export const MobxContext = createContext({});
+type MobxContetnType = {
+    profiles: ProfilesModel;
+    currentProfile: ProfileModel;
+};
+
+export const MobxContext = createContext(new ProfilesModel());
 
 export default function App(props: any) {
     const {

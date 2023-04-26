@@ -14,16 +14,19 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { observer } from "mobx-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { UserModel } from "@/models/userModel";
+import { ProfileModel } from "@/models/profileModel";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const pages = ["Profiles", "Events", "Mission"];
 
 type AppMenuProps = {
-    user: UserModel | undefined;
+    profile: ProfileModel | undefined;
 };
 
 function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
+    const { user, error, isLoading } = useUser();
     const router = useRouter();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -66,7 +69,6 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                     >
                         {appTitle}
                     </Typography>
-
                     <Box
                         sx={{
                             flexGrow: 1,
@@ -156,19 +158,26 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                             </Button>
                         ))}
                     </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open profile page">
-                            <IconButton sx={{ p: 0 }} href="/profile">
-                                <Avatar
-                                    src={
-                                        appMenuProps?.user?.avatar.pictureS3Url
-                                    }
-                                    alt="Remy Sharp"
-                                />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
+                    {user && (
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open profile page">
+                                <IconButton
+                                    sx={{ p: 0 }}
+                                    onClick={() => {
+                                        router.push(`/profile/` + user?.sub);
+                                    }}
+                                >
+                                    <Avatar
+                                        src={
+                                            appMenuProps?.profile?.user?.avatar
+                                                .pictureS3Url
+                                        }
+                                        alt="Remy Sharp"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    )}
                 </Toolbar>
             </Container>
         </AppBar>

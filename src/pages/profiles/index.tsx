@@ -1,12 +1,6 @@
-import { getProfilesData } from "@/service/profile.service";
 import { enableStaticRendering, observer } from "mobx-react";
 import React, { useContext, useEffect, useState } from "react";
-
-import ProfileItem from "../components/ProfileItem";
-import { action } from "mobx";
-
 import {
-    Button,
     Paper,
     Table,
     TableBody,
@@ -17,21 +11,27 @@ import {
     Typography,
     Avatar,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import router from "next/router";
 import { MobxContext } from "../_app";
 import { ProfileModel } from "@/models/profileModel";
+import { ProfilesModel } from "@/models/profilesModel";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
 enableStaticRendering(isServer);
+type ServerSideProps = {
+    props: {
+        initialState: {
+            profiles: ProfilesModel;
+        };
+    };
+};
 
 export const getServerSideProps = async () => {
     console.log("making server request before app");
-    // here could be any async request for fetching data
     const params = new URLSearchParams();
-    params.append("targetRole", "targetRole");
-
+    params.append("targetRole", "any");
+    params.append("targetId", "0");
     const response = await fetch(
         process.env.NEST_HOST + "/profiles?" + params,
         {
@@ -50,12 +50,7 @@ export const getServerSideProps = async () => {
 };
 
 function IndexProfiles() {
-    const profilesContext = useContext(MobxContext) as any;
-    // useEffect(() => {
-    //     community.fetchCommunity().then((data) => {
-    //         console.log(data);
-    //     });
-    // }, []);
+    const profilesContext = useContext(MobxContext);
     console.log("profilesContext.profiles here:", profilesContext.profiles);
 
     return (
@@ -86,7 +81,7 @@ function IndexProfiles() {
                                     },
                                 }}
                                 onClick={() => {
-                                    router.push(`/profiles/1`);
+                                    router.push(`/profile/` + prf.id);
                                 }}
                             >
                                 <TableCell component="th" scope="row">

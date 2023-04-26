@@ -10,6 +10,7 @@ export class ProfileModel {
     organizer?: OrganizerModel;
     auth0sub?: string;
     roles?: UserRoles[] = [];
+    id: string = "";
 
     constructor(auth0sub?: string) {
         this.auth0sub = auth0sub;

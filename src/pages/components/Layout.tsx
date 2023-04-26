@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
         <>
             <AppMenu
                 appMenuProps={{
-                    user: undefined, //profileMy?.user,
+                    profile: profiles.getProfileBySub(user?.sub as any),
                 }}
             ></AppMenu>
             {children}

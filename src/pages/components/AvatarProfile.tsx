@@ -1,4 +1,4 @@
-import { PictureModel, ProfileModel, UserModel } from "@/models/models";
+import { UserModel } from "@/models/userModel";
 import { uploadAvatar } from "@/service/user.service";
 import { Button, Avatar, Box } from "@mui/material";
 import { observer } from "mobx-react";

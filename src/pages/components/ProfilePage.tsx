@@ -1,5 +1,5 @@
 import { UserRoles } from "@/enums";
-import { ProfileModel } from "@/models/models";
+
 import { createArtistMe } from "@/service/artist.service";
 import { createOrganizer } from "@/service/organizer.service";
 import { getMe } from "@/service/user.service";
@@ -8,6 +8,7 @@ import { Box, Typography, Button, Tab } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import User from "./User";
+import { ProfileModel } from "@/models/profileModel";
 
 type PrifileProps = {
     profile: ProfileModel | undefined;
@@ -28,7 +29,7 @@ type PrifileProps = {
 
 // const rolesClaimed = RolesClaimed.create();
 
-function ProfileMy({ profileProps }: { profileProps: PrifileProps }) {
+function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
     const [tabValue, setTabValue] = React.useState<string>("-1");
 
     useEffect(() => {
@@ -144,4 +145,4 @@ function ProfileMy({ profileProps }: { profileProps: PrifileProps }) {
         </>
     );
 }
-export default observer(ProfileMy);
+export default observer(ProfilePage);
