@@ -18,4 +18,14 @@ module.exports = {
 
         return config;
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "sacredgroovesimages.s3.amazonaws.com",
+                port: "",
+                pathname: "/*",
+            },
+        ],
+    },
 };

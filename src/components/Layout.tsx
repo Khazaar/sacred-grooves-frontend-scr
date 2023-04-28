@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import AppMenu from "./AppMenu";
 
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { MobxContext } from "../_app";
+import { MobxContext } from "../pages/_app";
 
 interface LayoutProps {
     children: React.ReactNode;

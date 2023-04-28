@@ -5,7 +5,7 @@ import { types } from "mobx-state-tree";
 import { toJS } from "mobx";
 import { ProfileModel } from "@/models/profileModel";
 import { ProfilesModel } from "@/models/profilesModel";
-import ProfilePage from "../components/ProfilePage";
+import ProfilePage from "../../components/ProfilePage";
 import { MobxContext } from "../_app";
 import { enableStaticRendering } from "mobx-react";
 import { parseProfile } from "@/models/utils.model";
@@ -56,28 +56,17 @@ export async function getStaticPaths() {
     });
     return {
         paths: pathsWithParams,
-        fallback: false,
+        fallback: "blocking",
     };
 }
-
-const RolesClaimed = types
-    .model({
-        Artist: false,
-        Organizer: false,
-        SupportTeam: false,
-        Visitor: false,
-    })
-    .actions((self) => ({
-        setRoleClaimed(role: UserRoles, value: boolean) {
-            self[role] = value;
-        },
-    }));
 
 export default function IndexProfile({ profileData }: { profileData: any }) {
     const profile = parseProfile(profileData);
     return (
         <>
-            <ProfilePage profileProps={{ profile: profile }}></ProfilePage>
+            {profile != undefined && (
+                <ProfilePage profileProps={{ profile: profile }} />
+            )}
         </>
     );
 }

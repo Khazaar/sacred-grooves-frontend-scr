@@ -58,12 +58,12 @@ function AvatarProfile({ avatarProps }: { avatarProps: AvatarProps }) {
             {/* {previewImageUrl && <img src={previewImageUrl} alt="Preview" />} */}
 
             <Box sx={{ width: 200 }}>
-                {/* <Image
+                <Image
                     alt="Avatar"
                     width={200}
+                    height={200}
                     src={avatarProps.user.avatar.pictureS3Url}
-                /> */}
-                {/* <Typography>{avatarProps.user.avatar.pictureS3Url}</Typography> */}
+                />
             </Box>
 
             {avatarProps.user.avatar.isAvaratSelected &&
