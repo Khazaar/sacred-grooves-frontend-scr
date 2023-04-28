@@ -16,7 +16,7 @@ export default function Index() {
     const router = useRouter();
     useEffect(() => {
         if (user) {
-            //router.push("/profile");
+            router.push("/profiles");
         } else {
         }
     }, [user]);
@@ -42,7 +42,6 @@ export default function Index() {
                             Please, login to the platform
                         </Typography>
                     </CardContent>
-                    <Typography>{user?.sub}</Typography>
                     <CardActions>
                         <Button href="/api/auth/login">Login</Button>
                         <Button href="/api/auth/logout">Logout</Button>

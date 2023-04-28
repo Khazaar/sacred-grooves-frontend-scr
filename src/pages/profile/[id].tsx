@@ -8,10 +8,14 @@ import { ProfilesModel } from "@/models/profilesModel";
 import ProfilePage from "../components/ProfilePage";
 import { MobxContext } from "../_app";
 import { enableStaticRendering } from "mobx-react";
+import { parseProfile } from "@/models/utils.model";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
 enableStaticRendering(isServer);
+type ProfileProps = {
+    profileData: any;
+};
 
 export const getStaticProps = async ({
     params,
@@ -28,12 +32,11 @@ export const getStaticProps = async ({
         }
     );
     const profilesData: any[] = await response.json();
+    const profileData: any = profilesData[0];
 
     return {
         props: {
-            initialState: {
-                profiles: profilesData,
-            },
+            profileData: profileData,
         },
     };
 };
@@ -70,15 +73,11 @@ const RolesClaimed = types
         },
     }));
 
-export default function IndexProfile() {
-    const profilesContext = useContext(MobxContext);
+export default function IndexProfile({ profileData }: { profileData: any }) {
+    const profile = parseProfile(profileData);
     return (
         <>
-            {profilesContext && (
-                <ProfilePage
-                    profileProps={{ profile: profilesContext.profiles[0] }}
-                ></ProfilePage>
-            )}
+            <ProfilePage profileProps={{ profile: profile }}></ProfilePage>
         </>
     );
 }

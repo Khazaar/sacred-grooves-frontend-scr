@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { makeAutoObservable, makeObservable, observable } from "mobx";
 import { MapLocationModel } from "./mapLocationModel";
 import { PictureModel } from "./pictureModel";
 
@@ -7,13 +7,14 @@ export class UserModel {
     nickName: string = "";
     firstName: string = "";
     lastName: string = "";
-    telegramName?: string = "";
-    avatar: PictureModel;
+    telegramName: string = "";
+    avatar: PictureModel = new PictureModel();
     mapLocation?: MapLocationModel;
     isEditing: boolean = false;
 
     constructor() {
-        makeObservable(this, { isEditing: observable, nickName: observable });
-        this.avatar = new PictureModel();
+        //makeObservable(this, { isEditing: observable, nickName: observable });
+        makeAutoObservable(this);
+        //this.avatar = new PictureModel();
     }
 }

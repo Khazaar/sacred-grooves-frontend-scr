@@ -1,5 +1,3 @@
-// import { actionKeysUser } from "@/enums";
-import { ProfileModel, UserModel } from "@/models/models";
 import {
     TableContainer,
     Paper,
@@ -12,40 +10,31 @@ import {
     Box,
     TextField,
 } from "@mui/material";
-import Link from "next/link";
-import { ChangeEvent } from "react";
-import AvatarMy from "./AvatarProfile";
 
+import { ChangeEvent, useEffect } from "react";
+import AvatarProfile from "./AvatarProfile";
 import { observer } from "mobx-react";
 import { updateUserMe } from "@/service/user.service";
-//process.env.LOCALHOST_URL +
+
+import { ProfileModel } from "@/models/profileModel";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { UserModel } from "@/models/userModel";
 
 type UserProps = {
-    user: UserModel;
+    profile: ProfileModel;
 };
 
 function User({ userProps }: { userProps: UserProps }) {
+    const { user, error, isLoading } = useUser();
+
     const handleUserInfoChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        // const name = e.target.name;
-        // setUserMe((prevData) => ({
-        //     ...prevData,
-        //     [name]: e.target.value,
-        // }));
-        //console.log(userMe);
+        // const dynamicKey = e.target.name as keyof UserModel;
+        // userProps.profile.user[dynamicKey] = e.target.value as string;
     };
-    // useEffect(() => {
-    //     if (!userProps.user) {
-    //         // userProps.user.setActionKeyUser(actionKeysUser.edit);
-    //         // userMe.email = user?.email as string;
-    //         // setUserMe(userMe);
-    //     } else {
-    //         // setActionKeyUser(actionKeysUser.view);
-    //         // userProps.profileMy.user && setUserMe(userProps.profileMy.user);
-    //     }
-    // }, [userProps]);
-    // useEffect(() => {}, []);
+    const isUserMe = userProps.profile.auth0sub == user?.sub;
+
     return (
         <Box
             sx={{
@@ -68,30 +57,38 @@ function User({ userProps }: { userProps: UserProps }) {
                     <Typography variant="h5" component="div">
                         User information
                     </Typography>
-                    {!userProps.user.isEditing && (
-                        <Button
-                            onClick={() => {
-                                //userProps.user.setEditingState(true);
-                                userProps.user.isEditing = true;
-                                console.log(userProps.user);
-                            }}
-                        >
-                            Edit
-                        </Button>
+                    {!userProps.profile.user.isEditing && isUserMe && (
+                        <>
+                            <Button
+                                onClick={() => {
+                                    //userProps.profile.user.setEditingState(true);
+                                    userProps.profile.user.isEditing = true;
+                                    console.log(userProps.profile.user);
+                                }}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                href="/api/auth/logout"
+                            >
+                                Log out
+                            </Button>
+                        </>
                     )}
-                    {userProps.user.isEditing && (
+                    {userProps.profile.user.isEditing && (
                         <Button
                             onClick={() => {
-                                updateUserMe(userProps.user);
-                                userProps.user.isEditing = false;
+                                updateUserMe(userProps.profile.user);
+                                userProps.profile.user.isEditing = false;
                             }}
                         >
                             Save changes
                         </Button>
                     )}
-                    <Button href="/api/auth/logout">Log out</Button>
                 </Box>
-                {userProps.user && (
+                {userProps.profile.user && (
                     <TableContainer component={Paper}>
                         <Table
                             sx={{ minWidth: 400, maxWidth: 600 }}
@@ -110,7 +107,9 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userProps.user.nickName}
+                                            value={
+                                                userProps.profile.user.nickName
+                                            }
                                             size="small"
                                             onChange={(
                                                 e: ChangeEvent<
@@ -118,14 +117,14 @@ function User({ userProps }: { userProps: UserProps }) {
                                                     | HTMLTextAreaElement
                                                 >
                                             ) => {
-                                                userProps.user.nickName =
+                                                userProps.profile.user.nickName =
                                                     e.target.value;
-                                                console.log(
-                                                    userProps.user.nickName
-                                                );
                                             }}
                                             name="nickName"
-                                            disabled={!userProps.user.isEditing}
+                                            disabled={
+                                                !userProps.profile.user
+                                                    .isEditing
+                                            }
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -141,11 +140,24 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userProps.user.firstName}
+                                            value={
+                                                userProps.profile.user.firstName
+                                            }
                                             size="small"
-                                            onChange={handleUserInfoChange}
+                                            onChange={(
+                                                e: ChangeEvent<
+                                                    | HTMLInputElement
+                                                    | HTMLTextAreaElement
+                                                >
+                                            ) => {
+                                                userProps.profile.user.firstName =
+                                                    e.target.value;
+                                            }}
                                             name="firstName"
-                                            disabled={!userProps.user.isEditing}
+                                            disabled={
+                                                !userProps.profile.user
+                                                    .isEditing
+                                            }
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -161,11 +173,24 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userProps.user.lastName}
+                                            value={
+                                                userProps.profile.user.lastName
+                                            }
                                             size="small"
-                                            onChange={handleUserInfoChange}
+                                            onChange={(
+                                                e: ChangeEvent<
+                                                    | HTMLInputElement
+                                                    | HTMLTextAreaElement
+                                                >
+                                            ) => {
+                                                userProps.profile.user.lastName =
+                                                    e.target.value;
+                                            }}
                                             name="lastName"
-                                            disabled={!userProps.user.isEditing}
+                                            disabled={
+                                                !userProps.profile.user
+                                                    .isEditing
+                                            }
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -181,11 +206,22 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userProps.user.email}
+                                            value={userProps.profile.user.email}
                                             size="small"
-                                            onChange={handleUserInfoChange}
+                                            onChange={(
+                                                e: ChangeEvent<
+                                                    | HTMLInputElement
+                                                    | HTMLTextAreaElement
+                                                >
+                                            ) => {
+                                                userProps.profile.user.email =
+                                                    e.target.value;
+                                            }}
                                             name="email"
-                                            disabled={!userProps.user.isEditing}
+                                            disabled={
+                                                !userProps.profile.user
+                                                    .isEditing
+                                            }
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -198,7 +234,8 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <a
                                             href={
                                                 "https://t.me/" +
-                                                userProps.user.telegramName
+                                                userProps.profile.user
+                                                    .telegramName
                                             }
                                         >
                                             Telegram
@@ -208,11 +245,25 @@ function User({ userProps }: { userProps: UserProps }) {
                                         <TextField
                                             id="standard-basic"
                                             variant="outlined"
-                                            value={userProps.user.telegramName}
+                                            value={
+                                                userProps.profile.user
+                                                    .telegramName
+                                            }
                                             size="small"
-                                            onChange={handleUserInfoChange}
+                                            onChange={(
+                                                e: ChangeEvent<
+                                                    | HTMLInputElement
+                                                    | HTMLTextAreaElement
+                                                >
+                                            ) => {
+                                                userProps.profile.user.telegramName =
+                                                    e.target.value;
+                                            }}
                                             name="telegramName"
-                                            disabled={!userProps.user.isEditing}
+                                            disabled={
+                                                !userProps.profile.user
+                                                    .isEditing
+                                            }
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -222,34 +273,13 @@ function User({ userProps }: { userProps: UserProps }) {
                 )}
             </Box>
 
-            <AvatarMy
+            <AvatarProfile
                 avatarProps={{
-                    user: userProps.user,
+                    user: userProps.profile.user,
                 }}
-            ></AvatarMy>
+            ></AvatarProfile>
         </Box>
     );
 }
 
-// function User2() {
-//     const usr = new UserModel();
-//     const a = new Athlete("Egor", 1, 1);
-//     return (
-//         <>
-//             <Button
-//                 onClick={() => {
-//                     usr.setEditingState(true);
-//                     a.wishHappyBirthday();
-//                     console.log(usr);
-//                 }}
-//             >
-//                 Set true
-//             </Button>
-//             <Button>{a.age}</Button>
-//             <Button onClick={()=>{
-
-//             }}>Create user</Button>
-//         </>
-//     );
-// }
 export default observer(User);

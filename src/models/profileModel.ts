@@ -1,21 +1,26 @@
-import { makeObservable, observable, action } from "mobx";
+import { makeObservable, observable, action, makeAutoObservable } from "mobx";
 import { ArtistModel } from "./artistModel";
 import { OrganizerModel } from "./organizerModel";
 import { UserModel } from "./userModel";
 import { UserRoles } from "@/enums";
 
 export class ProfileModel {
-    user: UserModel;
-    artist?: ArtistModel;
-    organizer?: OrganizerModel;
+    user: UserModel = new UserModel();
+    artist?: ArtistModel = new ArtistModel();
+    organizer?: OrganizerModel = new OrganizerModel();
     auth0sub?: string;
-    roles?: UserRoles[] = [];
+    roles: UserRoles[] = [];
     id: string = "";
 
     constructor(auth0sub?: string) {
         this.auth0sub = auth0sub;
-        this.user = new UserModel();
-        makeObservable(this, { user: observable, getRoles: action });
+        makeObservable(this, {
+            user: observable,
+            getRoles: action,
+            artist: observable,
+            organizer: observable,
+        });
+        //makeAutoObservable(this);
     }
 
     getRoles() {

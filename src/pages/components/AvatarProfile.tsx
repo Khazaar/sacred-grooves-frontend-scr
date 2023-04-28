@@ -1,8 +1,9 @@
 import { UserModel } from "@/models/userModel";
 import { uploadAvatar } from "@/service/user.service";
-import { Button, Avatar, Box } from "@mui/material";
+import { Button, Avatar, Box, Typography } from "@mui/material";
 import { observer } from "mobx-react";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import Image from "next/image";
 
 type AvatarProps = {
     user: UserModel;
@@ -21,7 +22,7 @@ function AvatarProfile({ avatarProps }: { avatarProps: AvatarProps }) {
             avatarProps.user.avatar.isAvaratSelected = true;
         }
     };
-    const handleSave = async () => {
+    const handleUpload = async () => {
         if (!currentImage) return;
         avatarProps.user.avatar.pictureS3Url = await uploadAvatar(currentImage);
         avatarProps.user.avatar.isAvaratSelected = false;
@@ -57,16 +58,17 @@ function AvatarProfile({ avatarProps }: { avatarProps: AvatarProps }) {
             {/* {previewImageUrl && <img src={previewImageUrl} alt="Preview" />} */}
 
             <Box sx={{ width: 200 }}>
-                <img
+                {/* <Image
                     alt="Avatar"
-                    width="100%"
+                    width={200}
                     src={avatarProps.user.avatar.pictureS3Url}
-                />
+                /> */}
+                {/* <Typography>{avatarProps.user.avatar.pictureS3Url}</Typography> */}
             </Box>
 
             {avatarProps.user.avatar.isAvaratSelected &&
                 avatarProps.user?.isEditing && (
-                    <Button onClick={handleSave}>Upload</Button>
+                    <Button onClick={handleUpload}>Upload</Button>
                 )}
         </Box>
     );

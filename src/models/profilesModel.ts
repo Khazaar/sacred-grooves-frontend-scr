@@ -5,7 +5,7 @@ import { OrganizerModel } from "./organizerModel";
 import { PictureModel } from "./pictureModel";
 import { UserModel } from "./userModel";
 import getProfiles from "@/pages/api/profiles";
-import { parceProfile } from "./utils.model";
+import { parseProfile } from "./utils.model";
 
 export class ProfilesModel {
     profiles: ProfileModel[] = [];
@@ -34,7 +34,7 @@ export class ProfilesModel {
         const ids: string[] = [];
         if (data.profiles)
             data.profiles.forEach((prf: any) => {
-                profiles.push(parceProfile(prf));
+                profiles.push(parseProfile(prf));
                 ids.push(prf.id);
             });
         this.profiles = profiles;

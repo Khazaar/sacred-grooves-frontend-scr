@@ -164,7 +164,10 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                                 <IconButton
                                     sx={{ p: 0 }}
                                     onClick={() => {
-                                        router.push(`/profile/` + user?.sub);
+                                        router.push(
+                                            `/profile/` +
+                                                appMenuProps?.profile?.id
+                                        );
                                     }}
                                 >
                                     <Avatar

@@ -29,15 +29,13 @@ export default function App(props: any) {
 
     return (
         <CacheProvider value={emotionCache}>
-            <ThemeProvider theme={theme}>
-                <UserProvider>
-                    <MobxContext.Provider value={profiles}>
-                        <Layout>
-                            <Component {...pageProps} />
-                        </Layout>
-                    </MobxContext.Provider>
-                </UserProvider>
-            </ThemeProvider>
+            <UserProvider>
+                <MobxContext.Provider value={profiles}>
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                </MobxContext.Provider>
+            </UserProvider>
         </CacheProvider>
     );
 }

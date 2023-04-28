@@ -1,4 +1,4 @@
-import { UserModel } from "@/models/models";
+import { UserModel } from "@/models/userModel";
 import {
     withApiAuthRequired,
     getAccessToken,

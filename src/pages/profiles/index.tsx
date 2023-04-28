@@ -31,7 +31,7 @@ export const getServerSideProps = async () => {
     console.log("making server request before app");
     const params = new URLSearchParams();
     params.append("targetRole", "any");
-    params.append("targetId", "0");
+    //params.append("targetId", "0");
     const response = await fetch(
         process.env.NEST_HOST + "/profiles?" + params,
         {
@@ -51,8 +51,6 @@ export const getServerSideProps = async () => {
 
 function IndexProfiles() {
     const profilesContext = useContext(MobxContext);
-    console.log("profilesContext.profiles here:", profilesContext.profiles);
-
     return (
         <>
             <Typography variant="h4" align="center">

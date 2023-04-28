@@ -9,38 +9,22 @@ import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import User from "./User";
 import { ProfileModel } from "@/models/profileModel";
+import Artist from "./Artist";
 
 type PrifileProps = {
     profile: ProfileModel | undefined;
 };
 
-// const RolesClaimed = types
-//     .model({
-//         Artist: false,
-//         Organizer: false,
-//         SupportTeam: false,
-//         Visitor: false,
-//     })
-//     .actions((self) => ({
-//         setRoleClaimed(role: UserRoles, value: boolean) {
-//             self[role] = value;
-//         },
-//     }));
-
-// const rolesClaimed = RolesClaimed.create();
-
 function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
-    const [tabValue, setTabValue] = React.useState<string>("-1");
+    const [tabValue, setTabValue] = React.useState<string>("0");
 
     useEffect(() => {
         if (profileProps.profile?.artist) {
             setTabValue("0");
-            //rolesClaimed.setRoleClaimed(UserRoles.Artist, true);
         }
-        if (profileProps.profile?.organizer) {
-            //rolesClaimed.setRoleClaimed(UserRoles.Organizer, true);
-            setTabValue("1");
-        }
+        // if (profileProps.profile?.organizer) {
+        //     setTabValue("1");
+        // }
     }, []);
 
     const handleTabChange = (event: React.SyntheticEvent, value: number) => {
@@ -78,9 +62,50 @@ function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
                 }}
             >
                 {profileProps.profile?.user && (
-                    <User
-                        userProps={{ user: profileProps.profile?.user }}
-                    ></User>
+                    <User userProps={{ profile: profileProps.profile }} />
+                )}
+                <Typography variant="h6">Roles:</Typography>
+
+                {profileProps.profile?.roles && (
+                    <Box sx={{ minWidth: 600 }}>
+                        <TabContext value={tabValue}>
+                            <Box
+                                sx={{ borderBottom: 1, borderColor: "divider" }}
+                            >
+                                <TabList
+                                    onChange={handleTabChange}
+                                    aria-label="basic tabs example"
+                                >
+                                    {profileProps.profile?.roles?.map(
+                                        (key, index, array) => {
+                                            if (key) {
+                                                return (
+                                                    <Tab
+                                                        label={key.toString()}
+                                                        value={index.toString()}
+                                                        key={"tab" + key}
+                                                    ></Tab>
+                                                );
+                                            }
+                                        }
+                                    )}
+                                </TabList>
+                            </Box>
+                            <TabPanel value="0">
+                                {profileProps.profile && (
+                                    <Artist
+                                        artistProps={{
+                                            profile: profileProps.profile,
+                                        }}
+                                    />
+                                )}
+                            </TabPanel>
+                            {/* <TabPanel value="1">
+                            <Button>Create event</Button>
+                        </TabPanel>
+                        <TabPanel value="2">Item Three</TabPanel> */}
+                        </TabContext>
+                    </Box>
                 )}
 
                 <Box sx={{ display: "flex" }}>
@@ -102,45 +127,6 @@ function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
                     <Button>Support Team</Button>
                     <Button>Visitor</Button>
                 </Box>
-                {tabValue != "-1" && (
-                    <Box sx={{ minWidth: 600 }}>
-                        <TabContext value={tabValue}>
-                            <Box
-                                sx={{ borderBottom: 1, borderColor: "divider" }}
-                            >
-                                <TabList
-                                    onChange={handleTabChange}
-                                    aria-label="basic tabs example"
-                                >
-                                    {/* {(
-                                        Object.entries(rolesClaimed) as Entries<
-                                            typeof rolesClaimed
-                                        >
-                                    ).map((key, index, array) => {
-                                        if (key[1]) {
-                                            return (
-                                                <Tab
-                                                    label={key[0].toString()}
-                                                    value={index.toString()}
-                                                    key={"tab" + key}
-                                                ></Tab>
-                                            );
-                                        }
-                                    })} */}
-                                </TabList>
-                            </Box>
-                            {/* <TabPanel value="0">
-                                {profileMy && (
-                                    // <EditArtist userMe={userMy}></EditArtist>
-                                )}
-                            </TabPanel> */}
-                            <TabPanel value="1">
-                                <Button>Create event</Button>
-                            </TabPanel>
-                            <TabPanel value="2">Item Three</TabPanel>
-                        </TabContext>
-                    </Box>
-                )}
             </Box>
         </>
     );

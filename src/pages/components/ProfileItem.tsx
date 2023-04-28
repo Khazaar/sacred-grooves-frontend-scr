@@ -1,8 +1,8 @@
-import { ProfileModel } from "@/models/models";
 import { Box, Typography, Button, Tab } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { SxProps } from "@mui/material";
+import { ProfileModel } from "@/models/profileModel";
 
 type ProfileItemProps = {
     profile: ProfileModel | undefined;
