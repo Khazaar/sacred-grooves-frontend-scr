@@ -1,6 +1,31 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+// /** @type {import('next').NextConfig} */
+// const (config, { isServer }) = {
+//     reactStrictMode: true,
+//     if(!isServer) {
+//         config.node = {
+//             fs: 'empty'
+//         }
+//     }
+// }
 
-module.exports = nextConfig
+// module.exports = nextConfig
+
+module.exports = {
+    reactStrictMode: true,
+    webpack5: true,
+    webpack: (config) => {
+        config.resolve.fallback = { fs: false };
+
+        return config;
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "sacredgroovesimages.s3.amazonaws.com",
+                port: "",
+                pathname: "/*",
+            },
+        ],
+    },
+};
