@@ -7,21 +7,19 @@ import { NextApiRequest } from "next";
 
 export default withApiAuthRequired(async function Me(req: NextApiRequest, res) {
     switch (req.method) {
-        case "POST":
+        case "PATCH":
             try {
                 const { accessToken } = await getAccessToken(req, res);
-                const targetRole = req.query.targetRole;
-                const paramsOutcome = new URLSearchParams();
-                paramsOutcome.append("targetRole", targetRole as any);
+
                 const response = await fetch(
-                    process.env.NEST_HOST +
-                        "/profiles/me/role?" +
-                        paramsOutcome,
+                    process.env.NEST_HOST + "/profiles/me/",
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
+                            "Content-Type": "application/json",
                         },
-                        method: "GET",
+                        method: "PATCH",
+                        body: JSON.stringify(req.body),
                     }
                 );
                 const profileMe = await response.json();

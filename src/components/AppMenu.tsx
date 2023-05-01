@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { UserModel } from "@/models/userModel";
 import { ProfileModel } from "@/models/profileModel";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { useProfileMy } from "./Layout";
 
 const pages = ["Profiles", "Events", "Mission"];
 
@@ -25,8 +26,9 @@ type AppMenuProps = {
     profile: ProfileModel | undefined;
 };
 
-function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
+function AppMenu() {
     const { user, error, isLoading } = useUser();
+    const profileMy = useProfileMy();
     const router = useRouter();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -164,16 +166,12 @@ function AppMenu({ appMenuProps }: { appMenuProps: AppMenuProps | undefined }) {
                                 <IconButton
                                     sx={{ p: 0 }}
                                     onClick={() => {
-                                        router.push(
-                                            `/profile/` +
-                                                appMenuProps?.profile?.id
-                                        );
+                                        router.push(`/profile/` + profileMy.id);
                                     }}
                                 >
                                     <Avatar
                                         src={
-                                            appMenuProps?.profile?.user?.avatar
-                                                .pictureS3Url
+                                            profileMy?.user?.avatar.pictureS3Url
                                         }
                                         alt="Remy Sharp"
                                     />

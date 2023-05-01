@@ -8,23 +8,27 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
+    TextField,
+    Typography,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useProfileMy } from "../Layout";
+import { profile } from "console";
 
 type ArtistProps = {
     profile: ProfileModel;
 };
 
-function Artist({ artistProps }: { artistProps: ArtistProps }) {
+function ArtistEdit() {
+    const profileMy = useProfileMy();
     const handleCheckboxMusicStyleChange = (musicSlyleName: string) => {
-        artistProps.profile.artist?.toggleMusicStyle(musicSlyleName);
+        profileMy.artist?.toggleMusicStyle(musicSlyleName);
+        //console.log(artistProps.profile.artist?.musicStyles);
     };
     const handleCheckboxArtistTypeChange = (artistTypeName: string) => {
-        artistProps.profile.artist?.toggleArtisitType(artistTypeName);
+        profileMy.artist?.toggleArtisitType(artistTypeName);
     };
-
-    const handleSaveArtist = async () => {};
 
     return (
         <Box>
@@ -34,7 +38,7 @@ function Artist({ artistProps }: { artistProps: ArtistProps }) {
 
                     <Box>
                         <FormGroup>
-                            {artistProps.profile.artist?.artistTypes?.map(
+                            {profileMy.artist?.artistTypes?.map(
                                 (item, index) => (
                                     <FormControlLabel
                                         control={
@@ -64,7 +68,7 @@ function Artist({ artistProps }: { artistProps: ArtistProps }) {
                     <FormLabel component="legend">Select music style</FormLabel>
                     <Box>
                         <FormGroup>
-                            {artistProps.profile.artist?.musicStyles.map(
+                            {profileMy.artist?.musicStyles.map(
                                 (item, index) => (
                                     <FormControlLabel
                                         control={
@@ -90,9 +94,29 @@ function Artist({ artistProps }: { artistProps: ArtistProps }) {
                     </Box>
                 </FormControl>
             </Box>
-            <Button onClick={handleSaveArtist}>Save artist information</Button>
+            <Typography sx={{ margin: "0.5rem 0" }}>
+                Creativity description:
+            </Typography>
+            <TextField
+                sx={{ width: "100%" }}
+                multiline
+                rows={5}
+                onChange={(
+                    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                ) => {
+                    profileMy.artist.creativityDescription = e.target.value;
+                }}
+                value={profileMy.artist.creativityDescription}
+            />
+            <Button
+                variant="outlined"
+                color="error"
+                sx={{ margin: "0.5rem 0" }}
+            >
+                Delete Artist data
+            </Button>
         </Box>
     );
 }
 
-export default observer(Artist);
+export default observer(ArtistEdit);

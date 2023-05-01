@@ -1,14 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { UserRoles } from "@/enums";
-import { types } from "mobx-state-tree";
-
-import { toJS } from "mobx";
-import { ProfileModel } from "@/models/profileModel";
-import { ProfilesModel } from "@/models/profilesModel";
-import ProfilePage from "../../components/ProfilePage";
-import { MobxContext } from "../_app";
+import ProfilePage from "../../components/profilePage/ProfilePage";
 import { enableStaticRendering } from "mobx-react";
 import { parseProfile } from "@/models/utils.model";
+import { Box } from "@mui/material";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
@@ -63,10 +57,10 @@ export async function getStaticPaths() {
 export default function IndexProfile({ profileData }: { profileData: any }) {
     const profile = parseProfile(profileData);
     return (
-        <>
+        <Box sx={{ width: "80%" }}>
             {profile != undefined && (
                 <ProfilePage profileProps={{ profile: profile }} />
             )}
-        </>
+        </Box>
     );
 }

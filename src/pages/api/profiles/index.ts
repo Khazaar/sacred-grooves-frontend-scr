@@ -12,11 +12,13 @@ type NextApiRequestWithFormData = NextApiRequest & {
 
 export async function getProfilesApi(
     targetSub: string | undefined,
-    targetRole: string | undefined
+    targetRole: string | undefined,
+    targetId: string | undefined
 ) {
     const paramsOutcome = new URLSearchParams();
     if (targetSub) paramsOutcome.append("targetSub", targetSub as any);
     if (targetRole) paramsOutcome.append("targetRole", targetRole as any);
+    if (targetId) paramsOutcome.append("targetId", targetId as any);
     const response = await fetch(
         process.env.NEST_HOST + "/profiles?" + paramsOutcome,
         {
@@ -33,12 +35,14 @@ export default async function getProfiles(
     switch (req.method) {
         case "GET":
             try {
-                //const { accessToken } = await getAccessToken(req, res);
-                // //const url = new URL(req.url as any);
-                // const paramsIncome = new URLSearchParams(req.url as any);
                 const targetSub = req.query.targetSub as string;
                 const targetRole = req.query.targetRole as string;
-                const data = await getProfilesApi(targetSub, targetRole);
+                const targetId = req.query.targetId as string;
+                const data = await getProfilesApi(
+                    targetSub,
+                    targetRole,
+                    targetId
+                );
 
                 res.status(200).json(data);
                 break;

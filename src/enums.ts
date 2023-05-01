@@ -2,5 +2,5 @@ export enum UserRoles {
     Artist = "Artist",
     Organizer = "Organizer",
     Visitor = "Visitor",
-    SupportTeam = "SupportTeam",
+    SupportTeam = "Support Team",
 }

@@ -13,6 +13,8 @@ export class ArtistModel {
     artistTypes: ArtisitType[] = [];
     musicStyles: MusicStyle[] = [];
     profileId?: number;
+    isActive: boolean = false;
+    creativityDescription: string = "";
     toggleMusicStyle = (musicStyleName: string) => {
         const musicStyle = this.musicStyles.find(
             (x) => x.musicStyleName === musicStyleName
@@ -29,6 +31,12 @@ export class ArtistModel {
         if (artisitType) {
             artisitType.isSelected = !artisitType.isSelected;
         }
+    };
+
+    deactivate = () => {
+        this.isActive = false;
+        this.artistTypes.forEach((x) => (x.isSelected = false));
+        this.musicStyles.forEach((x) => (x.isSelected = false));
     };
 
     constructor() {

@@ -12,20 +12,13 @@ import {
     Avatar,
 } from "@mui/material";
 import router from "next/router";
-import { MobxContext } from "../_app";
 import { ProfileModel } from "@/models/profileModel";
 import { ProfilesModel } from "@/models/profilesModel";
+import { parseProfile } from "@/models/utils.model";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
 enableStaticRendering(isServer);
-type ServerSideProps = {
-    props: {
-        initialState: {
-            profiles: ProfilesModel;
-        };
-    };
-};
 
 export const getServerSideProps = async () => {
     console.log("making server request before app");
@@ -42,15 +35,17 @@ export const getServerSideProps = async () => {
 
     return {
         props: {
-            initialState: {
-                profiles: profilesData,
-            },
+            profilesData,
         },
     };
 };
 
-function IndexProfiles() {
-    const profilesContext = useContext(MobxContext);
+function IndexProfiles({ profilesData }: { profilesData: any }) {
+    const profiles: ProfileModel[] = [];
+    if (profilesData)
+        profilesData.forEach((profileData: any) => {
+            profiles.push(parseProfile(profileData));
+        });
     return (
         <>
             <Typography variant="h4" align="center">
@@ -70,7 +65,7 @@ function IndexProfiles() {
                     </TableHead>
                     <TableBody>
                         {/* {profilesContext.profiles?.state == "done" && */}
-                        {profilesContext.profiles.map((prf: ProfileModel) => (
+                        {profiles.map((prf: ProfileModel) => (
                             <TableRow
                                 key={prf.auth0sub}
                                 sx={{
@@ -81,6 +76,7 @@ function IndexProfiles() {
                                 onClick={() => {
                                     router.push(`/profile/` + prf.id);
                                 }}
+                                hover={true}
                             >
                                 <TableCell component="th" scope="row">
                                     <Avatar

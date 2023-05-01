@@ -16,28 +16,28 @@ export const parseProfile = (prf: any) => {
     profile.user.telegramName = prf.user.telegramName;
     profile.user.avatar = new PictureModel();
     profile.user.avatar.pictureS3Url = prf.user?.avatar?.pictureS3Url;
-    if (prf.artist) {
-        profile.artist = new ArtistModel();
-        // profile.artist.artistTypes = prf.artist.artistTypes;
-        // profile.artist.musicStyles = prf.artist.musicStyles;
-        profile.roles.push(UserRoles.Artist);
-        for (const muticStyle of prf.artist.musicStyles) {
-            profile.artist.musicStyles.push({
-                musicStyleName: muticStyle.musicStyleName,
-                isSelected: muticStyle.isSelected,
-            });
-        }
-        for (const artisitType of prf.artist.artistTypes) {
-            profile.artist.artistTypes.push({
-                artistTypeName: artisitType.artistTypeName,
-                isSelected: artisitType.isSelected,
-            });
-        }
+    profile.user.about = prf.user.about;
+
+    profile.artist = new ArtistModel();
+    profile.artist.isActive = prf.artist.isActive;
+    profile.artist.creativityDescription = prf.artist.creativityDescription;
+    for (const muticStyle of prf.artist.musicStyles) {
+        profile.artist.musicStyles.push({
+            musicStyleName: muticStyle.musicStyleName,
+            isSelected: muticStyle.isSelected,
+        });
     }
-    if (prf.organizer != undefined) {
-        profile.organizer = new OrganizerModel();
-        profile.organizer.mainLocation = prf.organizer.mainLocation;
-        profile.roles.push(UserRoles.Organizer);
+    for (const artisitType of prf.artist.artistTypes) {
+        profile.artist.artistTypes.push({
+            artistTypeName: artisitType.artistTypeName,
+            isSelected: artisitType.isSelected,
+        });
     }
+
+    profile.organizer = new OrganizerModel();
+    profile.organizer = new OrganizerModel();
+    profile.organizer.mainLocation = prf.organizer.mainLocation;
+    profile.organizer.isActive = prf.organizer.isActive;
+
     return profile;
 };

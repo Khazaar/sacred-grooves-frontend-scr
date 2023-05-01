@@ -10,7 +10,7 @@ export class UserModel {
     telegramName: string = "";
     avatar: PictureModel = new PictureModel();
     mapLocation?: MapLocationModel;
-    isEditing: boolean = false;
+    about: string = "";
 
     constructor() {
         //makeObservable(this, { isEditing: observable, nickName: observable });

@@ -1,8 +1,10 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, makeObservable } from "mobx";
 
 export class OrganizerModel {
-    mainLocation?: string;
+    mainLocation?: string = "";
+    isActive: boolean = false;
     constructor() {
-        makeAutoObservable(this);
+        //makeAutoObservable(this);
+        makeObservable(this, { mainLocation: true, isActive: true });
     }
 }

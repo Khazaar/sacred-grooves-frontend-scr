@@ -17,36 +17,37 @@ function ProfileItem({
 }: {
     profileItemProps: ProfileItemProps;
 }) {
-    return (
-        <>
-            <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                {/* <Box sx={ProfileItemStyle}>
-                    <Typography variant="body1">
-                        {profileItemProps.profile?.auth0sub}
-                    </Typography>
-                </Box> */}
-                <Box sx={ProfileItemStyle}>
-                    <Typography variant="body1">
-                        {profileItemProps.profile?.user.email}
-                    </Typography>
-                </Box>
-                <Box sx={ProfileItemStyle}>
-                    <Typography variant="body1">
-                        {profileItemProps.profile?.user.nickName}
-                    </Typography>
-                </Box>
-                <Box sx={ProfileItemStyle}>
-                    <Typography variant="body1">
-                        {profileItemProps.profile?.user.firstName}
-                    </Typography>
-                </Box>
-                <Box sx={ProfileItemStyle}>
-                    <Typography variant="body1">
-                        {profileItemProps.profile?.user.lastName}
-                    </Typography>
-                </Box>
-            </Box>
-        </>
-    );
+    // return (
+    //     <>
+    //         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
+    //             {/* <Box sx={ProfileItemStyle}>
+    //                 <Typography variant="body1">
+    //                     {profileItemProps.profile?.auth0sub}
+    //                 </Typography>
+    //             </Box> */}
+    //             <Box sx={ProfileItemStyle}>
+    //                 <Typography variant="body1">
+    //                     {profileItemProps.profile?.user.email}
+    //                 </Typography>
+    //             </Box>
+    //             <Box sx={ProfileItemStyle}>
+    //                 <Typography variant="body1">
+    //                     {profileItemProps.profile?.user.nickName}
+    //                 </Typography>
+    //             </Box>
+    //             <Box sx={ProfileItemStyle}>
+    //                 <Typography variant="body1">
+    //                     {profileItemProps.profile?.user.firstName}
+    //                 </Typography>
+    //             </Box>
+    //             <Box sx={ProfileItemStyle}>
+    //                 <Typography variant="body1">
+    //                     {profileItemProps.profile?.user.lastName}
+    //                 </Typography>
+    //             </Box>
+    //         </Box>
+    //     </>
+    // );
+    return <></>;
 }
 export default observer(ProfileItem);
