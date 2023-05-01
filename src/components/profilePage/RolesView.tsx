@@ -1,10 +1,8 @@
 import { UserRoles } from "@/enums";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
     Typography,
     Box,
     Tab,
-    Button,
     Card,
     List,
     ListItem,
@@ -12,12 +10,8 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import React from "react";
-import Artist from "./ArtistEdit";
-
-import Organizer from "./OrganizerPanel";
-import { useProfileMy } from "../Layout";
-import SupportTeam from "./SupportTeam";
 import { profilePageEntityStyle } from "@/styles/muiComponentStyles";
+import { useMobxContext } from "../layout/Layout";
 type Tab = {
     label: string;
     value: number;
@@ -38,7 +32,8 @@ const tabs: Tab[] = [
 ];
 
 function RolesView() {
-    const profileMy = useProfileMy();
+    const mobxContext = useMobxContext();
+
     const [tabValue, setTabValue] = React.useState<string>("0");
 
     const handleTabChange = (event: React.SyntheticEvent, value: number) => {
@@ -47,7 +42,7 @@ function RolesView() {
 
     return (
         <Card sx={profilePageEntityStyle}>
-            {profileMy.artist.isActive && (
+            {mobxContext.profilesAll.currentProfile.artist.isActive && (
                 <>
                     <Box
                         sx={{
@@ -59,7 +54,7 @@ function RolesView() {
                         <Box sx={{ width: "40%" }}>
                             <Typography variant="h6">Artist type:</Typography>
                             <List>
-                                {profileMy.artist.artistTypes.map(
+                                {mobxContext.profilesAll.currentProfile.artist.artistTypes.map(
                                     (artistType) => (
                                         <ListItem disablePadding>
                                             {artistType.isSelected && (
@@ -74,9 +69,8 @@ function RolesView() {
                         </Box>
                         <Box sx={{ width: "40%" }}>
                             <Typography variant="h6">Music styles:</Typography>
-
                             <List>
-                                {profileMy.artist.musicStyles.map(
+                                {mobxContext.profilesAll.currentProfile.artist.musicStyles.map(
                                     (musicStyle) => (
                                         <ListItem disablePadding>
                                             {musicStyle.isSelected && (
@@ -98,12 +92,15 @@ function RolesView() {
                         multiline
                         rows={5}
                         disabled={true}
-                        value={profileMy.artist.creativityDescription}
+                        value={
+                            mobxContext.profilesAll.currentProfile.artist
+                                .creativityDescription
+                        }
                     />
                 </>
             )}
 
-            {profileMy.supportTeam.isActive && (
+            {mobxContext.profilesAll.currentProfile.supportTeam.isActive && (
                 <Card>
                     <Typography>Support Team:</Typography>
                 </Card>

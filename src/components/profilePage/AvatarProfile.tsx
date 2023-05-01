@@ -5,7 +5,7 @@ import { observer } from "mobx-react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import { ProfileModel } from "@/models/profileModel";
-import { useProfileMy } from "../Layout";
+import { useMobxContext } from "../layout/Layout";
 
 type AvatarProps = {
     profile: ProfileModel;
@@ -14,7 +14,7 @@ type AvatarProps = {
 function AvatarProfile({ avatarProps }: { avatarProps: AvatarProps }) {
     const [currentImage, setCurrentImage] = useState<File | null>();
     // const [previewImageUrl, setPreviewImageUrl] = useState<string>("");
-    const profileMy = useProfileMy();
+    const { profileMy } = useMobxContext();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {

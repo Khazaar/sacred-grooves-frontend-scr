@@ -13,21 +13,20 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useProfileMy } from "../Layout";
-import { profile } from "console";
+import { useMobxContext } from "../layout/Layout";
 
 type ArtistProps = {
     profile: ProfileModel;
 };
 
 function ArtistEdit() {
-    const profileMy = useProfileMy();
+    const mobxContext = useMobxContext();
     const handleCheckboxMusicStyleChange = (musicSlyleName: string) => {
-        profileMy.artist?.toggleMusicStyle(musicSlyleName);
+        mobxContext.profileMy.artist?.toggleMusicStyle(musicSlyleName);
         //console.log(artistProps.profile.artist?.musicStyles);
     };
     const handleCheckboxArtistTypeChange = (artistTypeName: string) => {
-        profileMy.artist?.toggleArtisitType(artistTypeName);
+        mobxContext.profileMy.artist?.toggleArtisitType(artistTypeName);
     };
 
     return (
@@ -38,7 +37,7 @@ function ArtistEdit() {
 
                     <Box>
                         <FormGroup>
-                            {profileMy.artist?.artistTypes?.map(
+                            {mobxContext.profileMy.artist?.artistTypes?.map(
                                 (item, index) => (
                                     <FormControlLabel
                                         control={
@@ -68,7 +67,7 @@ function ArtistEdit() {
                     <FormLabel component="legend">Select music style</FormLabel>
                     <Box>
                         <FormGroup>
-                            {profileMy.artist?.musicStyles.map(
+                            {mobxContext.profileMy.artist?.musicStyles.map(
                                 (item, index) => (
                                     <FormControlLabel
                                         control={
@@ -104,9 +103,10 @@ function ArtistEdit() {
                 onChange={(
                     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                 ) => {
-                    profileMy.artist.creativityDescription = e.target.value;
+                    mobxContext.profileMy.artist.creativityDescription =
+                        e.target.value;
                 }}
-                value={profileMy.artist.creativityDescription}
+                value={mobxContext.profileMy.artist.creativityDescription}
             />
             <Button
                 variant="outlined"

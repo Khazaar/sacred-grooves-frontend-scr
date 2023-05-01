@@ -3,6 +3,7 @@ import ProfilePage from "../../components/profilePage/ProfilePage";
 import { enableStaticRendering } from "mobx-react";
 import { parseProfile } from "@/models/utils.model";
 import { Box } from "@mui/material";
+import { useMobxContext } from "@/components/layout/Layout";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
@@ -56,6 +57,8 @@ export async function getStaticPaths() {
 
 export default function IndexProfile({ profileData }: { profileData: any }) {
     const profile = parseProfile(profileData);
+    const mobxContext = useMobxContext();
+    mobxContext.profilesAll.setCurrentProfileById(profile.id);
     return (
         <Box sx={{ width: "80%" }}>
             {profile != undefined && (

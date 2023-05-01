@@ -10,11 +10,14 @@ import {
     TableRow,
     Typography,
     Avatar,
+    Box,
 } from "@mui/material";
 import router from "next/router";
 import { ProfileModel } from "@/models/profileModel";
 import { ProfilesModel } from "@/models/profilesModel";
 import { parseProfile } from "@/models/utils.model";
+import ProfilesFilter from "@/components/profilesPage/ProfilesFilter";
+import { useMobxContext } from "@/components/layout/Layout";
 
 // enable static rendering ONLY on server
 const isServer = typeof window === "undefined";
@@ -41,16 +44,18 @@ export const getServerSideProps = async () => {
 };
 
 function IndexProfiles({ profilesData }: { profilesData: any }) {
-    const profiles: ProfileModel[] = [];
-    if (profilesData)
-        profilesData.forEach((profileData: any) => {
-            profiles.push(parseProfile(profileData));
-        });
+    const mobxContext = useMobxContext();
+    // if (profilesData) {
+    //     profilesData.forEach((profileData: any) => {
+    //         mobxContext.profilesAll.profiles.push(parseProfile(profileData));
+    //     });
+    // }
     return (
-        <>
+        <Box sx={{ marginTop: "1rem" }}>
             <Typography variant="h4" align="center">
                 Our community
             </Typography>
+            <ProfilesFilter />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -65,51 +70,56 @@ function IndexProfiles({ profilesData }: { profilesData: any }) {
                     </TableHead>
                     <TableBody>
                         {/* {profilesContext.profiles?.state == "done" && */}
-                        {profiles.map((prf: ProfileModel) => (
-                            <TableRow
-                                key={prf.auth0sub}
-                                sx={{
-                                    "&:last-child td, &:last-child th": {
-                                        border: 0,
-                                    },
-                                }}
-                                onClick={() => {
-                                    router.push(`/profile/` + prf.id);
-                                }}
-                                hover={true}
-                            >
-                                <TableCell component="th" scope="row">
-                                    <Avatar
-                                        alt={prf.user.nickName}
-                                        src={prf.user.avatar.pictureS3Url}
-                                    />
-                                </TableCell>
-                                <TableCell align="right">
-                                    {prf.user.nickName}
-                                </TableCell>
+                        {mobxContext.profilesAll.profilesFiltered.map(
+                            (prf: ProfileModel) => (
+                                <TableRow
+                                    key={prf.auth0sub}
+                                    sx={{
+                                        "&:last-child td, &:last-child th": {
+                                            border: 0,
+                                        },
+                                    }}
+                                    onClick={() => {
+                                        router.push(`/profile/` + prf.id);
+                                    }}
+                                    hover={true}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Avatar
+                                            alt={prf.user.nickName}
+                                            src={prf.user.avatar.pictureS3Url}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {prf.user.nickName}
+                                    </TableCell>
 
-                                <TableCell align="right">
-                                    {prf.user.firstName}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {prf.user.lastName}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {prf.getRoles().map((role) => (
-                                        <Typography variant="body2" key={role}>
-                                            {role}
-                                        </Typography>
-                                    ))}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {prf.user.mapLocation?.address}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                                    <TableCell align="right">
+                                        {prf.user.firstName}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {prf.user.lastName}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {prf.getRoles().map((role) => (
+                                            <Typography
+                                                variant="body2"
+                                                key={role}
+                                            >
+                                                {role}
+                                            </Typography>
+                                        ))}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {prf.user.mapLocation?.address}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+        </Box>
     );
 }
 

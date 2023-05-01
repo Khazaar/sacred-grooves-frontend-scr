@@ -2,9 +2,10 @@ import { UserProvider, useUser } from "@auth0/nextjs-auth0/client";
 import { theme } from "@/assets/theme";
 import { CacheProvider, ThemeProvider } from "@emotion/react";
 import createEmotionCache from "@/utility/createEmotionCache";
-import Layout from "../components/Layout";
+
 import { createContext } from "react";
 import { ProfileModel } from "@/models/profileModel";
+import Layout from "@/components/layout/Layout";
 
 const clientSideEmotionCache = createEmotionCache();
 

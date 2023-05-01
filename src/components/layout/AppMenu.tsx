@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { UserModel } from "@/models/userModel";
 import { ProfileModel } from "@/models/profileModel";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useProfileMy } from "./Layout";
+import { useMobxContext } from "./Layout";
 
 const pages = ["Profiles", "Events", "Mission"];
 
@@ -28,7 +28,7 @@ type AppMenuProps = {
 
 function AppMenu() {
     const { user, error, isLoading } = useUser();
-    const profileMy = useProfileMy();
+    const mobxContext = useMobxContext();
     const router = useRouter();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -166,12 +166,16 @@ function AppMenu() {
                                 <IconButton
                                     sx={{ p: 0 }}
                                     onClick={() => {
-                                        router.push(`/profile/` + profileMy.id);
+                                        router.push(
+                                            `/profile/` +
+                                                mobxContext.profileMy.id
+                                        );
                                     }}
                                 >
                                     <Avatar
                                         src={
-                                            profileMy?.user?.avatar.pictureS3Url
+                                            mobxContext.profileMy?.user?.avatar
+                                                .pictureS3Url
                                         }
                                         alt="Remy Sharp"
                                     />

@@ -5,19 +5,24 @@ import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import User from "./User";
 import { ProfileModel } from "@/models/profileModel";
-import { useProfileMy } from "../Layout";
+
 import { updateProfileMe } from "@/service/profile.service";
 import RolesEdit from "./RolesEdit";
 import RolesView from "./RolesView";
 import OrganizerPanel from "./OrganizerPanel";
+import { useMobxContext } from "../layout/Layout";
 
-type PrifileProps = {
+type ProfileProps = {
     profile: ProfileModel;
 };
 
-function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
-    const profileMy = useProfileMy();
-    const isProfileMe = profileProps.profile.auth0sub == profileMy.auth0sub;
+function ProfilePage({ profileProps }: { profileProps: ProfileProps }) {
+    const mobxContext = useMobxContext();
+    const isProfileMe =
+        profileProps.profile.auth0sub == mobxContext.profileMy.auth0sub;
+    const currentProfile = isProfileMe
+        ? mobxContext.profileMy
+        : mobxContext.profilesAll.currentProfile;
     return (
         <Box
             sx={{
@@ -37,11 +42,11 @@ function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
                 <Typography variant="h5" component="div">
                     Profile information
                 </Typography>
-                {!profileMy.isEditing && isProfileMe && (
+                {!currentProfile.isEditing && isProfileMe && (
                     <Box>
                         <Button
                             onClick={() => {
-                                profileMy.isEditing = true;
+                                currentProfile.isEditing = true;
                             }}
                         >
                             Edit
@@ -56,11 +61,11 @@ function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
                     </Box>
                 )}
                 <Box sx={{ display: "flex" }}>
-                    {profileMy.isEditing && (
+                    {currentProfile.isEditing && (
                         <Button
                             onClick={async () => {
-                                await updateProfileMe(profileMy);
-                                profileMy.isEditing = false;
+                                await updateProfileMe(currentProfile);
+                                currentProfile.isEditing = false;
                             }}
                         >
                             Save changes
@@ -71,16 +76,14 @@ function ProfilePage({ profileProps }: { profileProps: PrifileProps }) {
 
             <User
                 userProps={{
-                    profile: profileProps.profile.isEditing
-                        ? profileMy
-                        : profileProps.profile,
+                    profile: currentProfile,
                 }}
             />
 
-            {profileProps.profile.isEditing ? <RolesEdit /> : <RolesView />}
-            {profileProps.profile.organizer.isActive && (
+            {currentProfile.isEditing ? <RolesEdit /> : <RolesView />}
+            {currentProfile.organizer.isActive && (
                 <OrganizerPanel
-                    organizerProps={{ profile: profileProps.profile }}
+                    organizerProps={{ profile: currentProfile }}
                 ></OrganizerPanel>
             )}
         </Box>

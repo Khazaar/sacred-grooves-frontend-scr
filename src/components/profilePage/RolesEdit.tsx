@@ -3,14 +3,10 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Typography, Box, Tab, Button } from "@mui/material";
 import { observer } from "mobx-react";
 import React from "react";
-import Artist from "./ArtistEdit";
-
-import Organizer from "./OrganizerPanel";
-import { useProfileMy } from "../Layout";
-import SupportTeam from "./SupportTeam";
 import ArtistEdit from "./ArtistEdit";
-import { ArtistModel } from "@/models/artistModel";
+
 import { profilePageEntityStyle } from "@/styles/muiComponentStyles";
+import { useMobxContext } from "../layout/Layout";
 type Tab = {
     label: string;
     value: number;
@@ -31,7 +27,7 @@ const tabs: Tab[] = [
 ];
 
 function RolesEdit() {
-    const profileMy = useProfileMy();
+    const mobxContext = useMobxContext();
     const [tabValue, setTabValue] = React.useState<string>("0");
 
     const handleTabChange = (event: React.SyntheticEvent, value: number) => {
@@ -66,12 +62,12 @@ function RolesEdit() {
                     </TabList>
                 </Box>
                 <TabPanel value="0">
-                    {profileMy.artist.isActive ? (
+                    {mobxContext.profileMy.artist.isActive ? (
                         <ArtistEdit />
                     ) : (
                         <Button
                             onClick={async () => {
-                                profileMy.artist.isActive = true;
+                                mobxContext.profileMy.artist.isActive = true;
                             }}
                         >
                             Become an artist
@@ -79,10 +75,10 @@ function RolesEdit() {
                     )}
                 </TabPanel>
                 <TabPanel value="1">
-                    {!profileMy.organizer.isActive ? (
+                    {!mobxContext.profileMy.organizer.isActive ? (
                         <Button
                             onClick={async () => {
-                                profileMy.organizer.isActive = true;
+                                mobxContext.profileMy.organizer.isActive = true;
                             }}
                         >
                             Become an organizer
@@ -90,7 +86,8 @@ function RolesEdit() {
                     ) : (
                         <Button
                             onClick={() => {
-                                profileMy.organizer.isActive = false;
+                                mobxContext.profileMy.organizer.isActive =
+                                    false;
                             }}
                         >
                             Delete organizer data
@@ -98,10 +95,11 @@ function RolesEdit() {
                     )}
                 </TabPanel>
                 <TabPanel value="2">
-                    {!profileMy.supportTeam.isActive ? (
+                    {!mobxContext.profileMy.supportTeam.isActive ? (
                         <Button
                             onClick={() => {
-                                profileMy.supportTeam.isActive = true;
+                                mobxContext.profileMy.supportTeam.isActive =
+                                    true;
                             }}
                         >
                             Join support team
@@ -109,7 +107,8 @@ function RolesEdit() {
                     ) : (
                         <Button
                             onClick={() => {
-                                profileMy.supportTeam.isActive = false;
+                                mobxContext.profileMy.supportTeam.isActive =
+                                    false;
                             }}
                         >
                             Leave support team

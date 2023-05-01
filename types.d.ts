@@ -1,3 +1,5 @@
+import { ProfileModel, ProfilesModel } from "./models";
+
 interface IUserDto {
     password?: string;
     email?: string;

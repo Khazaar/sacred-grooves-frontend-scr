@@ -1,11 +1,8 @@
 import {
-    TableContainer,
-    Paper,
     Table,
     TableBody,
     TableCell,
     TableRow,
-    Button,
     Typography,
     Box,
     TextField,
@@ -15,13 +12,10 @@ import {
 import { ChangeEvent, useEffect } from "react";
 import AvatarProfile from "./AvatarProfile";
 import { observer } from "mobx-react";
-import { updateUserMe } from "@/service/user.service";
-
 import { ProfileModel } from "@/models/profileModel";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { UserModel } from "@/models/userModel";
 import { profilePageEntityStyle } from "@/styles/muiComponentStyles";
-import { useProfileMy } from "../Layout";
+import { useMobxContext } from "../layout/Layout";
 
 type UserProps = {
     profile: ProfileModel;
@@ -29,15 +23,7 @@ type UserProps = {
 
 function User({ userProps }: { userProps: UserProps }) {
     const { user, error, isLoading } = useUser();
-    const profileMy = useProfileMy();
-
-    const handleUserInfoChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        // const dynamicKey = e.target.name as keyof UserModel;
-        // userProps.profile.user[dynamicKey] = e.target.value as string;
-    };
-
+    const mobxContext = useMobxContext();
     return (
         <Card sx={profilePageEntityStyle}>
             {/* <Box> */}
@@ -70,11 +56,11 @@ function User({ userProps }: { userProps: UserProps }) {
                                             | HTMLTextAreaElement
                                         >
                                     ) => {
-                                        profileMy.user.nickName =
+                                        mobxContext.profileMy.user.nickName =
                                             e.target.value;
                                     }}
                                     name="nickName"
-                                    disabled={!userProps.profile.isEditing}
+                                    disabled={!mobxContext.profileMy.isEditing}
                                 />
                             </TableCell>
                         </TableRow>
@@ -98,7 +84,7 @@ function User({ userProps }: { userProps: UserProps }) {
                                             | HTMLTextAreaElement
                                         >
                                     ) => {
-                                        profileMy.user.firstName =
+                                        mobxContext.profileMy.user.firstName =
                                             e.target.value;
                                     }}
                                     name="firstName"
@@ -126,7 +112,7 @@ function User({ userProps }: { userProps: UserProps }) {
                                             | HTMLTextAreaElement
                                         >
                                     ) => {
-                                        profileMy.user.lastName =
+                                        mobxContext.profileMy.user.lastName =
                                             e.target.value;
                                     }}
                                     name="lastName"
@@ -154,7 +140,8 @@ function User({ userProps }: { userProps: UserProps }) {
                                             | HTMLTextAreaElement
                                         >
                                     ) => {
-                                        profileMy.user.email = e.target.value;
+                                        mobxContext.profileMy.user.email =
+                                            e.target.value;
                                     }}
                                     name="email"
                                     disabled={!userProps.profile.isEditing}
@@ -181,7 +168,7 @@ function User({ userProps }: { userProps: UserProps }) {
                                             | HTMLTextAreaElement
                                         >
                                     ) => {
-                                        profileMy.user.telegramName =
+                                        mobxContext.profileMy.user.telegramName =
                                             e.target.value;
                                     }}
                                     name="telegramName"
@@ -208,11 +195,11 @@ function User({ userProps }: { userProps: UserProps }) {
                 onChange={(
                     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                 ) => {
-                    profileMy.user.about = e.target.value;
+                    mobxContext.profileMy.user.about = e.target.value;
                 }}
                 value={
                     userProps.profile.isEditing
-                        ? profileMy.user.about
+                        ? mobxContext.profileMy.user.about
                         : userProps.profile.user.about
                 }
             />
